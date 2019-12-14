@@ -53,8 +53,7 @@ function draw() {
         x = startPosX;
         y = startPosY;
 
-        ballColor = '#' + Math.floor(0x121212 + Math.random() * 0xdadada).toString(16);
-        console.log('Generated new ball color: ' + ballColor);
+        ballColor = generateRandomColor();
     }
 
     window.requestAnimationFrame(draw);
@@ -132,4 +131,10 @@ function onMoveStop (event) {
         default:
             break;
     }
+}
+
+function generateRandomColor() {
+    generatedColor = '#' + Math.floor(0x121212 + Math.random() * 0xdadada).toString(16);
+    console.log('Generated new color: ' + generatedColor);
+    return generatedColor;
 }
