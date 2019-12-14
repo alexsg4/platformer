@@ -63,32 +63,6 @@ function onMoveRequest(event) {
     const key = event.key;
 
     switch (key) {
-        case "W":
-            dx = -MOVE_STEP;
-            dy = 0;
-            break;
-        case "A":
-            dx = 0;
-            dy = -MOVE_STEP;
-            break;
-        case "S":
-            dx = MOVE_STEP;
-            dy = 0;
-            break;
-        case "D":
-            dx = 0;
-            dy = MOVE_STEP;
-            break;
-
-        default:
-            break;
-    }
-}
-
-function onMoveRequest(event) {
-    const key = event.key;
-
-    switch (key) {
         case "w":
             dx = 0;
             dy = -MOVE_STEP;
