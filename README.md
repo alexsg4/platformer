@@ -1,6 +1,6 @@
 # Platformer
 
-A 2D Mario-clone with procedurally generated levels
+A 2D platformer where you kill ghosts and collect food
 
 ## Planned features
 
