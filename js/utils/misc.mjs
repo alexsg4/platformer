@@ -1,9 +1,20 @@
 const generateRandomColor = function() {
-    const generatedColor = '#' + Math.floor(0x121212 + Math.random() * 0xdadada).toString(16);
-    if (document.dbgDisplay) {
-        console.log('Generated new color: ' + generatedColor);
-    }
-    return generatedColor;
+  const minColor = 0x555555;
+  const maxColor = 0xdddddd;
+  const generatedColor = '#' + Math.floor(
+      minColor + Math.random() * maxColor).toString(16);
+  if (global.dbgDisplay) {
+    console.log('Generated new color: ' + generatedColor);
+  }
+  return generatedColor;
 };
 
-export { generateRandomColor };
+const isNull = function(param) {
+  return param === null;
+};
+
+const isNullOrUndefined = function(param) {
+  return param === null || param === undefined;
+};
+
+export {generateRandomColor, isNull, isNullOrUndefined};
