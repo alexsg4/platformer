@@ -3,7 +3,7 @@ const generateRandomColor = function() {
   const maxColor = 0xdddddd;
   const generatedColor = '#' + Math.floor(
       minColor + Math.random() * maxColor).toString(16);
-  if (global.dbgDisplay) {
+  if (window.dbgDisplay) {
     console.log('Generated new color: ' + generatedColor);
   }
   return generatedColor;
