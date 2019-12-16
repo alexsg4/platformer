@@ -42,6 +42,9 @@ class Sprite {
     }
 
     // only traverse sprite matrix line by line
+    if (this.imgId.includes('-flip')) {
+      frame = totalFrames - frame - 1;
+    }
     const x = frame % this.numFrames.x * this.size.x;
     let y = 0;
     if (frame >= this.numFrames.x) {
@@ -49,12 +52,15 @@ class Sprite {
     }
 
     const image = ResourceLoader.get(this.imgId);
+    ctx.save();
+    ctx.translate(this.pos.x, this.pos.y);
     ctx.drawImage(
         image,
         x, y,
         this.size.x, this.size.y,
-        this.pos.x, this.pos.y, // or 0, 0
+        0, 0, // or 0, 0
         Math.floor(this.size.x * 2.5), Math.floor(this.size.y * 2.5));
+    ctx.restore();
   }
 }
 
