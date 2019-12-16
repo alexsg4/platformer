@@ -1,17 +1,27 @@
 /* eslint-disable require-jsdoc */
 import Game from './js/game.mjs';
-
-global.dbgDisplay = false;
+import ResourceLoader from './js/utils/resource.mjs';
+window.dbgDisplay = false;
 
 const game = new Game();
-game.init();
 
-;(function() {
-  function main(dt) {
-    game.stopMain = window.requestAnimationFrame( main );
+let isGameRunning = false;
+const startGame = function() {
+  console.log('Game is loaded');
 
-    game.update(dt);
-    game.render();
+  game.init();
+  main();
+};
+
+ResourceLoader.init(startGame);
+
+function main(dt) {
+  if (!isGameRunning) {
+    console.log('Game is running!');
+    isGameRunning = true;
   }
-  main(0);
-})();
+  game.stopMain = window.requestAnimationFrame( main );
+
+  game.update(dt);
+  game.render();
+}
