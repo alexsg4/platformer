@@ -1,6 +1,7 @@
 /* eslint-disable require-jsdoc */
 import Game from './js/game.mjs';
 import ResourceLoader from './js/utils/resource.mjs';
+import InputManager from './js/utils/input.mjs';
 window.dbgDisplay = false;
 
 const game = new Game();
@@ -9,6 +10,7 @@ let isGameRunning = false;
 const startGame = function() {
   console.log('Game is loaded');
 
+  InputManager.init();
   game.init();
   main(window.performance.now());
 };

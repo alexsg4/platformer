@@ -1,69 +1,60 @@
-class InputManager {
+/* eslint-disable require-jsdoc */
 
-    constructor() {
-        if (!!InputManager.instance) {
-            return InputManager.instance;
-        }
+let _up = false;
+let _down = false;
+let _left = false;
+let _right = false;
 
-        InputManager.instance = this;
-
-        return this;
+function init() {
+  // Set up `onkeydown` event handler.
+  document.onkeydown = (ev) => {
+    if (ev.key === 'd') {
+      _right = true;
     }
-
-    static init() {
-        this.right = false;
-        this.left = false;
-        this.up = false;
-        this.down = false;
-
-        // Set up `onkeydown` event handler.
-        document.onkeydown = ev => {
-            if (ev.key === 'd') {
-                this.right = true;
-            }
-            if (ev.key === 'a') {
-                this.left = true;
-            }
-            if (ev.key === 'w') {
-                this.up = true;
-            }
-            if (ev.key === 's') {
-                this.down = true;
-            }
-        };
-        // Set up `onkeyup` event handler.
-        document.onkeyup = ev => {
-            if (ev.key === 'd') {
-                this.right = false;
-            }
-            if (ev.key === 'a') {
-                this.left = false;
-            }
-            if (ev.key === 'w') {
-                this.up = false;
-            }
-            if (ev.key === 's') {
-                this.down = false;
-            }
-        };
+    if (ev.key === 'a') {
+      _left = true;
     }
-
-    // Define getters for each key
-    static isPressedUp() {
-        return this.up;
+    if (ev.key === 'w') {
+      _up = true;
     }
-
-    static isPressedDown() {
-        return this.down;
+    if (ev.key === 's') {
+      _down = true;
     }
+  };
 
-    static isPressedLeft() {
-        return this.left;
+  // Set up `onkeyup` event handler.
+  document.onkeyup = (ev) => {
+    if (ev.key === 'd') {
+      _right = false;
     }
-
-    static isPressedRight() {
-        return this.right;
+    if (ev.key === 'a') {
+      _left = false;
     }
+    if (ev.key === 'w') {
+      _up = false;
+    }
+    if (ev.key === 's') {
+      _down = false;
+    }
+  };
 }
 
-export default InputManager;
+// Define getters for each key
+function isPressedUp() {
+  return _up;
+}
+
+function isPressedDown() {
+  return _down;
+}
+
+function isPressedLeft() {
+  return _left;
+}
+
+function isPressedRight() {
+  return _right;
+}
+
+export default {
+  init, isPressedUp, isPressedDown, isPressedLeft, isPressedRight};
