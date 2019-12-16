@@ -10,18 +10,19 @@ const startGame = function() {
   console.log('Game is loaded');
 
   game.init();
-  main();
+  main(window.performance.now());
 };
 
 ResourceLoader.init(startGame);
 
-function main(dt) {
+function main(tFrame) {
   if (!isGameRunning) {
     console.log('Game is running!');
     isGameRunning = true;
   }
   game.stopMain = window.requestAnimationFrame( main );
 
-  game.update(dt);
+  const tNow = window.performance.now();
+  game.update(tNow - tFrame);
   game.render();
 }
