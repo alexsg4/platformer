@@ -11,7 +11,7 @@ class Sprite {
     this.loop = loop;
     this.index = 0;
 
-    const img = ResourceLoader.get(this.imgId);
+    const img = ResourceLoader.getImage(this.imgId);
     if (img !== undefined) {
       this.numFrames = {
         x: img.width / this.size.x,
@@ -51,7 +51,7 @@ class Sprite {
       y = Math.floor(frame / this.numFrames.y) * this.size.y;
     }
 
-    const image = ResourceLoader.get(this.imgId);
+    const image = ResourceLoader.getImage(this.imgId);
     ctx.drawImage(
         image,
         x, y,

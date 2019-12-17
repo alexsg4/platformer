@@ -44,7 +44,21 @@ const _images = new Map();
 let _isInit = false;
 let _callbackFn = {};
 
-function _init() {
+let _tileMapData = undefined;
+function _loadTileMapData() {
+  const httpReq = new XMLHttpRequest();
+  httpReq.open('GET', window.location + '/assets/tilemap.json');
+  httpReq.responseType = 'json';
+  httpReq.send();
+  httpReq.onload = () => {
+    _tileMapData = httpReq.response;
+    if (_isReady()) {
+      _callbackFn();
+    }
+  };
+}
+
+function _loadImages() {
   for (const imgPath of IMAGE_PATHS) {
     const imgID = _getImgIDFromURL(imgPath);
     if (_images.get(imgID)) {
@@ -65,11 +79,16 @@ function _init() {
     };
     image.src = imgPath;
   }
+}
+
+function _init() {
+  _loadImages();
+  _loadTileMapData();
   _isInit = true;
 }
 
 function _isReady() {
-  if (_images.size < IMAGE_PATHS.size) {
+  if (_images.size < IMAGE_PATHS.size || isNullOrUndefined(_tileMapData)) {
     return false;
   }
   for (const value of _images.values()) {
@@ -96,8 +115,15 @@ export default {
       return;
     }
   },
-  get(imageID) {
+  getImage(imageID) {
     return _images.get(imageID);
+  },
+  getTileImageCoordsByType(imgType) {
+    const coords = {x: 0, y: 0};
+    const tileMapCoords = _tileMapData.TilePositions[imgType];
+    coords.x = (tileMapCoords[0] - 1) * _tileMapData.TileSize.x;
+    coords.y = (tileMapCoords[1] - 1) * _tileMapData.TileSize.y;
+    return coords;
   // eslint-disable-next-line comma-dangle
   }
 };

@@ -2,6 +2,7 @@
 import Game from './js/game.mjs';
 import ResourceLoader from './js/utils/resource.mjs';
 import InputManager from './js/utils/input.mjs';
+
 window.dbgDisplay = false;
 
 const game = new Game();
