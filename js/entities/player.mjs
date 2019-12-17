@@ -15,9 +15,8 @@ const ANIMS_BY_STATE = new Map([
   ['die', 'player-die']
 ]);
 
-class Player extends Entity {
+class Player {
   constructor(pos, size) {
-    super(pos, size, ANIMS_BY_STATE.get('idle'));
     this.animState = 'idle';
     this.sprite.speed = 0.1; // TODO tweak
     this.directionX = 'right';

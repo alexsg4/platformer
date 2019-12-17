@@ -1,51 +1,27 @@
 /* eslint-disable require-jsdoc */
-import Entity from './entity.mjs';
-import Unique from './Unique.mjs';
+import generateUID from '../utils/counter.mjs';
 import {isNullOrUndefined} from '../utils/misc.mjs';
 
-class Component extends Unique {
-  constructor() {
-    super();
-    this.parent = null;
+class Component {
+  constructor(params) {
+    this.id = generateUID();
+    this.parentID = null;
+    this.type = params[0] || {};
+    this.config = params[1] || {};
   }
 
-  onAttach(parent) {
-    if (isNullOrUndefined(parent)) {
+  onAttach(uid) {
+    if (isNullOrUndefined(uid)) {
       console.error('Trying to attach component to null parent!');
       return;
     }
-
-    if (!parent instanceof Entity) {
-      console.error('Trying to attach component to non-entity!');
-      return;
-    }
-
-    this.parent = parent;
+    this.parentID = uid;
   }
+}
 
-  onCollisionStart(...args) {
-
-  }
-
-  onCollisionOngoing(...args) {
-
-  }
-
-  onCollisionEnd(...args) {
-
-  }
-
-  onUpdate(dt) {
-
-  }
-
-  onRender(ctx) {
-
-  }
-
-  getComponentType() {
-    return 'GenericComponent';
-  }
+const createComponent = (params) => {
+  const component = new Component(params);
+  return component;
 };
 
-export default Component;
+export default createComponent;
