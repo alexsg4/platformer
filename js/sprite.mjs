@@ -52,15 +52,12 @@ class Sprite {
     }
 
     const image = ResourceLoader.get(this.imgId);
-    ctx.save();
-    ctx.translate(this.pos.x, this.pos.y);
     ctx.drawImage(
         image,
         x, y,
         this.size.x, this.size.y,
-        0, 0, // or 0, 0
+        Math.floor(this.pos.x), Math.floor(this.pos.y),
         Math.floor(this.size.x * 2.5), Math.floor(this.size.y * 2.5));
-    ctx.restore();
   }
 }
 
