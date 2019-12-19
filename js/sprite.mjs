@@ -3,13 +3,19 @@ import ResourceLoader from './utils/resource.mjs';
 
 /* eslint-disable require-jsdoc */
 class Sprite {
-  constructor(imgId, pos, size, speed, loop = false) {
-    this.imgId = imgId;
+  constructor(pos, size, speed, imgId, loop = false) {
     this.pos = pos;
     this.size = size;
-    this.speed = typeof speed === 'number' ? speed : 0;
+    this.speed = speed || 1;
+    this.imgId = imgId;
     this.loop = loop;
     this.index = 0;
+
+    return this;
+  }
+
+  onUpdate(dt) {
+    this.index += this.speed * dt;
 
     const img = ResourceLoader.getImage(this.imgId);
     if (img !== undefined) {
@@ -17,12 +23,6 @@ class Sprite {
         x: img.width / this.size.x,
         y: img.height / this.size.y};
     }
-
-    return this;
-  }
-
-  onUpdate(dt) {
-    this.index += this.speed * dt;
   }
 
   onRender(ctx) {
