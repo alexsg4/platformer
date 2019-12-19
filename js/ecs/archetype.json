@@ -9,7 +9,7 @@
                 "x": 50,
                 "y": 37
             },
-            "Speed": 1,
+            "Speed": 5,
             "Velocity": {
                 "x": 0,
                 "y": 0
@@ -19,15 +19,15 @@
             "Actions": {
                 "moveLeft": {
                     "input" : ["a", "KeyA"],
-                    "hold" : true 
+                    "hold" : false 
                 },
                 "moveRight": {
                     "input" : ["d", "KeyD"],
-                    "hold" : true 
+                    "hold" : false 
                 },
                 "crouch": {
                     "input" : ["s", "KeyS"],
-                    "hold" : true 
+                    "hold" : false 
                 },
                 "jump": {
                     "input" : ["w", "KeyW"],
@@ -56,8 +56,8 @@
                 "die": "player-die"
             },
             "CurrentState": "idle",
-            "Speed": "1",
-            "IsFlippedX": "false",
+            "Speed": 0.15,
+            "IsFlippedX": false,
             "CurrentDirectionX": "left",
             "PrevDirectionX": "left"
         },
@@ -76,8 +76,8 @@
                 "y": 0
             },
             "Size": {
-                "x": 50,
-                "y": 37
+                "x": 16,
+                "y": 16
             },
             "Speed": 2,
             "Velocity": {
@@ -96,8 +96,8 @@
                 "all": "nm-frog"
             },
             "CurrentState": "all",
-            "Speed": "1",
-            "IsFlippedX": "false",
+            "Speed": 0.15,
+            "IsFlippedX": false,
             "CurrentDirectionX": "left",
             "PrevDirectionX": "left"
         },
@@ -116,8 +116,8 @@
                 "y": 0
             },
             "Size": {
-                "x": 50,
-                "y": 37
+                "x": 16,
+                "y": 16
             },
             "Speed": 2,
             "Velocity": {
@@ -136,8 +136,8 @@
                 "all": "nm-skeleton"
             },
             "CurrentState": "all",
-            "Speed": "1",
-            "IsFlippedX": "false",
+            "Speed": 1,
+            "IsFlippedX": false,
             "CurrentDirectionX": "left",
             "PrevDirectionX": "left"
         },
@@ -156,8 +156,8 @@
                 "y": 0
             },
             "Size": {
-                "x": 50,
-                "y": 37
+                "x": 16,
+                "y": 16
             },
             "Speed": 4,
             "Velocity": {
@@ -176,8 +176,8 @@
                 "all": "nm-bat"
             },
             "CurrentState": "all",
-            "Speed": "1",
-            "IsFlippedX": "false",
+            "Speed": 1,
+            "IsFlippedX": false,
             "CurrentDirectionX": "left",
             "PrevDirectionX": "left"
         },
@@ -196,8 +196,8 @@
                 "y": 0
             },
             "Size": {
-                "x": 50,
-                "y": 37
+                "x": 16,
+                "y": 16
             },
             "Speed": 2,
             "Velocity": {
@@ -216,8 +216,8 @@
                 "all": "nm-ghost"
             },
             "CurrentState": "all",
-            "Speed": "1",
-            "IsFlippedX": "false",
+            "Speed": 1,
+            "IsFlippedX": false,
             "CurrentDirectionX": "left",
             "PrevDirectionX": "left"
         },
