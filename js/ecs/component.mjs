@@ -4,23 +4,33 @@ import {isNullOrUndefined} from '../utils/misc.mjs';
 
 class Component {
   constructor(params) {
-    this.id = generateUID();
-    this.parentID = null;
-    this.type = params[0] || {};
-    this.config = params[1] || {};
-  }
+    const _id = generateUID();
+    let _parentID = null;
+    const _type = params[0] || {};
+    // dirty way of deep-copying the params[1] obj
+    // this is done to ensure that every instance has its own config
+    const _config = JSON.parse(JSON.stringify(params[1]));
 
-  onAttach(uid) {
-    if (isNullOrUndefined(uid)) {
-      console.error('Trying to attach component to null parent!');
-      return;
-    }
-    this.parentID = uid;
+    this.getID = () => _id;
+    this.getParentID = () => _parentID;
+    this.getType = () => _type;
+    this.getConfig = () => _config;
+    this.onAttach = (uid) => {
+      if (isNullOrUndefined(uid)) {
+        console.error('Trying to attach component to null parent!');
+        return this;
+      }
+      _parentID = uid;
+    };
+
+    return this;
   }
 }
 
+// make Component class 'final'
 const createComponent = (params) => {
-  const component = new Component(params);
+  let component = new Component(params);
+  component = Object.freeze(component);
   return component;
 };
 

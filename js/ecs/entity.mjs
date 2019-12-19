@@ -5,29 +5,50 @@ import {isNullOrUndefined} from '../utils/misc.mjs';
 
 class Entity {
   constructor(archetype, componentData) {
-    this.id = generateUID();
-    this.archetype = archetype;
-    this.components = new Map();
+    const _id = generateUID();
+    const _archetype = archetype;
+    const _components = new Map();
+
+    this.getID = () => {
+      return _id;
+    };
+
+    this.getArchetype = () => {
+      return _archetype;
+    };
+
+    this.attachComponent = (component) => {
+      if (!isNullOrUndefined(component)) {
+        _components.set(component.getID(), component);
+        component.onAttach(_id);
+      }
+    };
+
+    this.getComponentByType = (type) => {
+      let compData = undefined;
+      for (const component of _components.values()) {
+        if (component.getType() === type) {
+          compData = component.getConfig();
+          break;
+        }
+      }
+      return compData;
+    };
+
     if (!isNullOrUndefined(archetype) && !isNullOrUndefined(componentData)) {
       for (const componentConfig of Object.entries(componentData)) {
         const componentToAdd = createComponent(componentConfig);
         this.attachComponent(componentToAdd);
       }
     }
-
     return this;
-  }
-
-  attachComponent(component) {
-    if (!isNullOrUndefined(component)) {
-      this.components.set(component.id, component);
-      component.onAttach(this.id);
-    }
   }
 };
 
+// make Entity class 'final'
 const createEntity = (archetype, params) => {
-  const entity = new Entity(archetype, params);
+  let entity = new Entity(archetype, params);
+  entity = Object.freeze(entity);
   return entity;
 };
 
