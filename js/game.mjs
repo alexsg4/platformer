@@ -2,14 +2,16 @@
 import ResourceLoader from './utils/resource.mjs';
 import {isNullOrUndefined} from './utils/misc.mjs';
 import createEntity from './ecs/entity.mjs';
+import createPhysicsSystem from './ecs/systems/physics.mjs';
+import createControlSystem from './ecs/systems/control.mjs';
+import createVisualSystem from './ecs/systems/visual.mjs';
 
 let _canvas = undefined;
 let _ctx = undefined;
 const _entities = new Map();
-const _systems = [];
+const _systems = new Map();
 let _playerID = undefined;
 let _isInitialized = false;
-
 
 function _registerSystem(system) {
   if (isNullOrUndefined(system)) {
@@ -17,13 +19,22 @@ function _registerSystem(system) {
     return;
   }
 
-  const systemType = system.type;
-  if (!isNullOrUndefined(_systems.get(system.type))) {
-    console.error('System of type: ' + systemType + ' already registered!');
+  const sysType = system.getType();
+  if (!isNullOrUndefined(_systems.get(sysType))) {
+    console.error('System already registered!');
     return;
   }
 
-  _systems.set(systemType, system);
+  _systems.set(sysType, system);
+  system.onInit();
+}
+
+function _unRegisterSystem(system) {
+  if (isNullOrUndefined(system)) {
+    console.warn('Game: trying to unRegister null system!');
+    return;
+  }
+  _systems.delete(system.getType());
 }
 
 function _registerEntity(entity) {
@@ -31,15 +42,29 @@ function _registerEntity(entity) {
     console.warn('Game: trying to register null entity!');
     return;
   }
-  // TODO register entity with necessary systems
-  _entities.set(entity.id, entity);
+
+  for (const system of _systems.values()) {
+    system.registerEntity(entity);
+  }
+  _entities.set(entity.getID(), entity);
+}
+
+function _unRegisterEntity(entity) {
+  if (isNullOrUndefined(entity)) {
+    console.warn('Game: trying to unregister null entity!');
+    return;
+  }
+  for (const system of _systems.values()) {
+    system.unRegisterEntity(entity);
+  }
+  _entities.delete(entity.getID());
 }
 
 export default {
-  spawnEntity(archetype) {
+  spawnNewEntity(archetype) {
     const isPlayer = archetype === 'Player';
     if (isPlayer && !isNullOrUndefined(_playerID)) {
-      console.error('Game.spawnEntity: ' + 'Player already exists!');
+      console.error('Game.spawnNewEntity: ' + 'Player already exists!');
       return;
     }
 
@@ -47,13 +72,17 @@ export default {
         archetype,
         ResourceLoader.getArchetypeData(archetype));
     if (isNullOrUndefined(entity)) {
-      console.error('Game.spawnEntity: ' + 'entity creation failed!');
+      console.error('Game.spawnNewEntity: ' + 'entity creation failed!');
       return;
     }
     _registerEntity(entity);
     if (isPlayer) {
-      _playerID = entity.id;
+      _playerID = entity.getID();
     }
+  },
+
+  unSpawnEntity(entity) {
+    _unRegisterEntity(entity);
   },
 
   getPlayer() {
@@ -78,14 +107,17 @@ export default {
     _ctx = _canvas.getContext('2d');
     _ctx.imageSmoothingEnabled = false;
 
-    this.spawnEntity('Player');
     _isInitialized = true;
-    // TODO remove
-    console.log(JSON.stringify(this.getPlayer()), null, 4);
+    _registerSystem(createControlSystem());
+    _registerSystem(createPhysicsSystem());
+    _registerSystem(createVisualSystem());
+
+    this.spawnNewEntity('Player');
+    this.spawnNewEntity('Frog');
   },
 
   update(dt) {
-    for (const system of _systems) {
+    for (const system of _systems.values()) {
       if (isNullOrUndefined(system)) {
         console.warn('Game.update :' + 'system undefined!');
         continue;
@@ -95,7 +127,8 @@ export default {
   },
 
   render() {
-    for (const system of _systems) {
+    _ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+    for (const system of _systems.values()) {
       if (isNullOrUndefined(system)) {
         console.warn('Game.render :' + 'system undefined!');
         continue;
@@ -111,7 +144,7 @@ export default {
     }
     _isInitialized = false;
 
-    for (const system of _systems) {
+    for (const system of _systems.values()) {
       if (isNullOrUndefined(system)) {
         continue;
       }
