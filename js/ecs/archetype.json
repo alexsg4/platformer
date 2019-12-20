@@ -39,7 +39,7 @@
                 }
             }
         },
-        "Collision": {
+        "Collider": {
             "BoxSizeFactor": {
                 "x": 1,
                 "y": 1
@@ -85,7 +85,7 @@
                 "y": 0
             }
         },
-        "Collision": {
+        "Collider": {
             "BoxSizeFactor": {
                 "x": 1,
                 "y": 1
@@ -125,7 +125,7 @@
                 "y": 0
             }
         },
-        "Collision": {
+        "Collider": {
             "BoxSizeFactor": {
                 "x": 1,
                 "y": 1
@@ -165,7 +165,7 @@
                 "y": 0
             }
         },
-        "Collision": {
+        "Collider": {
             "BoxSizeFactor": {
                 "x": 1,
                 "y": 1
@@ -205,7 +205,7 @@
                 "y": 0
             }
         },
-        "Collision": {
+        "Collider": {
             "BoxSizeFactor": {
                 "x": 1,
                 "y": 1
