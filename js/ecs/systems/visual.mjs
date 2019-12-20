@@ -14,7 +14,17 @@ class VisualSystem extends System {
 
   getAnimStateImage(visualComp) {
     const currentState = visualComp.CurrentState;
-    return visualComp.AnimationStates[currentState];
+    let imageID = visualComp.AnimationStates[currentState] ||
+      visualComp.AnimationStates['all'];
+
+    if (visualComp.CurrentDirectionX !== visualComp.PrevDirectionX) {
+      if (imageID.includes('-flip')) {
+        imageID = imageID.replace('-flip', '');
+      } else {
+        imageID = imageID.concat('-flip');
+      }
+    }
+    return imageID;
   }
 
   registerEntity(entity) {

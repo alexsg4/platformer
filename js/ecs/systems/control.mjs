@@ -14,12 +14,20 @@ class ControlSystem extends System {
     const physics = entity.getComponentByType('Physics');
     const speed = physics.Speed;
     const velocity = physics.Velocity;
+    const visualComp = entity.getComponentByType('Visual');
+
     switch (action) {
       case 'moveLeft':
         velocity.x -= speed;
+        visualComp.CurrentState = 'run';
+        visualComp.prevDirectionX = visualComp.CurrentDirectionX;
+        visualComp.CurrentDirectionX = 'left';
         break;
       case 'moveRight':
         velocity.x += speed;
+        visualComp.CurrentState = 'run';
+        visualComp.prevDirectionX = visualComp.CurrentDirectionX;
+        visualComp.CurrentDirectionX = 'right';
         break;
       case 'crouch':
         velocity.y += speed;
@@ -28,17 +36,23 @@ class ControlSystem extends System {
         break;
       case 'jump':
         velocity.y -= speed;
+        visualComp.CurrentState = 'jump';
         break;
       case 'attack':
-        // TODO change anim
+        visualComp.CurrentState = 'attack';
         // TODO deal damage
         break;
-      default: break;
+      default:
+        break;
     }
     console.log(+physics.Position.x + '\t' +physics.Position.y);
   }
 
   handleUserInput(entity) {
+    const visualComp = entity.getComponentByType('Visual');
+    if (visualComp) {
+      visualComp.CurrentState = 'idle';
+    }
     const actions = entity.getComponentByType(COMPONENT_TYPE).Actions;
     for (const action of Object.keys(actions)) {
       const InputConfig = actions[action];

@@ -17,8 +17,8 @@ class PhysicsSystem extends System {
     for (const entity of this._registeredEntities.values()) {
       const componentToUpdate = entity.getComponentByType(SYSTEM_TYPE);
       const velocity = componentToUpdate['Velocity'];
-      velocity.x *= (1- FRICTION) ;
-      //velocity.y += GRAVITY*FRICTION;
+      velocity.x *= (1- FRICTION);
+      //velocity.y += GRAVITY*FRICTION; TODO enable after spawning map
 
       const position = componentToUpdate['Position'];
       position.x += velocity.x;

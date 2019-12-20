@@ -58,8 +58,8 @@
             "CurrentState": "idle",
             "Speed": 0.15,
             "IsFlippedX": false,
-            "CurrentDirectionX": "left",
-            "PrevDirectionX": "left"
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
         },
         "Health": {
             "HP": 100
@@ -98,8 +98,8 @@
             "CurrentState": "all",
             "Speed": 0.15,
             "IsFlippedX": false,
-            "CurrentDirectionX": "left",
-            "PrevDirectionX": "left"
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
         },
         "Health": {
             "HP": 10
@@ -138,8 +138,8 @@
             "CurrentState": "all",
             "Speed": 1,
             "IsFlippedX": false,
-            "CurrentDirectionX": "left",
-            "PrevDirectionX": "left"
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
         },
         "Health": {
             "HP": 20
@@ -178,8 +178,8 @@
             "CurrentState": "all",
             "Speed": 1,
             "IsFlippedX": false,
-            "CurrentDirectionX": "left",
-            "PrevDirectionX": "left"
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
         },
         "Health": {
             "HP": 10
@@ -218,8 +218,8 @@
             "CurrentState": "all",
             "Speed": 1,
             "IsFlippedX": false,
-            "CurrentDirectionX": "left",
-            "PrevDirectionX": "left"
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
         },
         "Health": {
             "HP": 20
