@@ -1,15 +1,18 @@
 /* eslint-disable require-jsdoc */
-import ResourceLoader from './utils/resource.mjs';
 import {isNullOrUndefined} from './utils/misc.mjs';
+
+import ResourceLoader from './utils/resource.mjs';
 import createEntity from './ecs/entity.mjs';
-import createPhysicsSystem from './ecs/systems/physics.mjs';
+
 import createControlSystem from './ecs/systems/control.mjs';
+import createCollisionSystem from './ecs/systems/collision.mjs';
+import createPhysicsSystem from './ecs/systems/physics.mjs';
 import createVisualSystem from './ecs/systems/visual.mjs';
 
 let _canvas = undefined;
 let _ctx = undefined;
 const _entities = new Map();
-const _systems = new Map();
+const _systems = [];
 let _playerID = undefined;
 let _isInitialized = false;
 
@@ -20,12 +23,13 @@ function _registerSystem(system) {
   }
 
   const sysType = system.getType();
-  if (!isNullOrUndefined(_systems.get(sysType))) {
+  if (!isNullOrUndefined(_systems.find( (system) =>
+    (system.getType() === sysType)))) {
     console.error('System already registered!');
     return;
   }
 
-  _systems.set(sysType, system);
+  _systems.push(system);
   system.onInit();
 }
 
@@ -34,7 +38,7 @@ function _unRegisterSystem(system) {
     console.warn('Game: trying to unRegister null system!');
     return;
   }
-  _systems.delete(system.getType());
+  _systems.splice(_systems.indexOf(system), 1);
 }
 
 function _registerEntity(entity) {
@@ -43,7 +47,7 @@ function _registerEntity(entity) {
     return;
   }
 
-  for (const system of _systems.values()) {
+  for (const system of _systems) {
     system.registerEntity(entity);
   }
   _entities.set(entity.getID(), entity);
@@ -54,7 +58,7 @@ function _unRegisterEntity(entity) {
     console.warn('Game: trying to unregister null entity!');
     return;
   }
-  for (const system of _systems.values()) {
+  for (const system of _systems) {
     system.unRegisterEntity(entity);
   }
   _entities.delete(entity.getID());
@@ -109,15 +113,17 @@ export default {
 
     _isInitialized = true;
     _registerSystem(createControlSystem());
+    _registerSystem(createCollisionSystem());
     _registerSystem(createPhysicsSystem());
     _registerSystem(createVisualSystem());
 
     this.spawnNewEntity('Player');
+    // TODO remove test code
     this.spawnNewEntity('Frog');
   },
 
   update(dt) {
-    for (const system of _systems.values()) {
+    for (const system of _systems) {
       if (isNullOrUndefined(system)) {
         console.warn('Game.update :' + 'system undefined!');
         continue;

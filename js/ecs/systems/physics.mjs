@@ -3,7 +3,7 @@
 import System from '../system.mjs';
 
 // TODO load constants from json
-const GRAVITY = 1;
+const GRAVITY = 5;
 const FRICTION = 0;
 const SYSTEM_TYPE = 'Physics';
 const COMPONENT_TYPE = 'Physics';
@@ -18,7 +18,8 @@ class PhysicsSystem extends System {
       const componentToUpdate = entity.getComponentByType(SYSTEM_TYPE);
       const velocity = componentToUpdate['Velocity'];
       velocity.x *= (1- FRICTION);
-      //velocity.y += GRAVITY*FRICTION; TODO enable after spawning map
+      // TODO enable after world is created
+      velocity.y += GRAVITY*FRICTION;
 
       const position = componentToUpdate['Position'];
       position.x += velocity.x;
