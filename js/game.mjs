@@ -9,8 +9,11 @@ import createCollisionSystem from './ecs/systems/collision.mjs';
 import createPhysicsSystem from './ecs/systems/physics.mjs';
 import createVisualSystem from './ecs/systems/visual.mjs';
 
+import Camera from './camera.mjs';
+
 let _canvas = undefined;
 let _ctx = undefined;
+let _camera = undefined;
 const _entities = new Map();
 const _systems = [];
 let _playerID = undefined;
@@ -118,6 +121,7 @@ export default {
     _registerSystem(createVisualSystem());
 
     this.spawnNewEntity('Player');
+    _camera = new Camera(this.getPlayer(), _canvas.width, _canvas.height);
     // TODO remove test code
     this.spawnNewEntity('Frog');
   },
@@ -130,10 +134,14 @@ export default {
       }
       system.onUpdate(dt);
     }
+    _camera.onUpdate(dt);
   },
 
   render() {
     _ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+    const cameraPos = _camera.getPosition();
+    _ctx.save();
+    _ctx.translate(-cameraPos.x, -cameraPos.y);
     for (const system of _systems.values()) {
       if (isNullOrUndefined(system)) {
         console.warn('Game.render :' + 'system undefined!');
@@ -141,6 +149,7 @@ export default {
       }
       system.onRender(_ctx);
     }
+    _ctx.restore();
   },
 
   shutdown() {
