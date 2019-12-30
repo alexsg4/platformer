@@ -45,7 +45,7 @@ class ControlSystem extends System {
       default:
         break;
     }
-    console.log(+physics.Position.x + '\t' +physics.Position.y);
+    // console.log(+physics.Position.x + '\t' +physics.Position.y);
   }
 
   handleUserInput(entity) {
