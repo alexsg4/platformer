@@ -1,8 +1,5 @@
 {
-    "TileSize" : {
-        "x" : 16,
-        "y" : 16
-    },
+    "TileSize" : 16,
     "TileCount" : {
         "x" : 9,
         "y" : 6

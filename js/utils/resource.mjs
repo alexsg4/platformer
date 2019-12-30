@@ -156,9 +156,16 @@ export default {
   getTileImageCoordsByType(imgType) {
     const coords = {x: 0, y: 0};
     const tileMapCoords = _tileMapData.TilePositions[imgType];
-    coords.x = (tileMapCoords[0] - 1) * _tileMapData.TileSize.x;
-    coords.y = (tileMapCoords[1] - 1) * _tileMapData.TileSize.y;
+    if (isNullOrUndefined(tileMapCoords)) {
+      return undefined;
+    }
+    coords.x = (tileMapCoords[1] - 1) * _tileMapData.TileSize;
+    coords.y = (tileMapCoords[0] - 1) * _tileMapData.TileSize;
     return coords;
+  },
+
+  getTileSize() {
+    return _tileMapData.TileSize;
   },
 
   getArchetypeData(archetype) {
