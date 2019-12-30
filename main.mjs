@@ -2,29 +2,29 @@
 import Game from './js/game.mjs';
 import ResourceLoader from './js/utils/resource.mjs';
 import InputManager from './js/utils/input.mjs';
+
 window.dbgDisplay = false;
 
-const game = new Game();
-
-let isGameRunning = false;
+let _isGameRunning = false;
+let _stopMain = undefined;
 const startGame = function() {
   console.log('Game is loaded');
 
   InputManager.init();
-  game.init();
+  Game.init();
   main(window.performance.now());
 };
 
 ResourceLoader.init(startGame);
 
 function main(tFrame) {
-  if (!isGameRunning) {
+  if (!_isGameRunning) {
     console.log('Game is running!');
-    isGameRunning = true;
+    _isGameRunning = true;
   }
-  game.stopMain = window.requestAnimationFrame( main );
+  _stopMain = window.requestAnimationFrame( main );
 
   const tNow = window.performance.now();
-  game.update(tNow - tFrame);
-  game.render();
+  Game.update(tNow - tFrame);
+  Game.render();
 }

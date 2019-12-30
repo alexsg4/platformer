@@ -1,47 +1,160 @@
 /* eslint-disable require-jsdoc */
-import Entity from './ecs/entity.mjs';
-import Player from './entities/player.mjs';
-import Vector2D from './utils/math/vector2d.mjs';
+import {isNullOrUndefined} from './utils/misc.mjs';
 
-import Component from './ecs/component.mjs';
+import ResourceLoader from './utils/resource.mjs';
+import createEntity from './ecs/entity.mjs';
 
+import createControlSystem from './ecs/systems/control.mjs';
+import createCollisionSystem from './ecs/systems/collision.mjs';
+import createPhysicsSystem from './ecs/systems/physics.mjs';
+import createVisualSystem from './ecs/systems/visual.mjs';
 
-class Game {
-  constructor() {
-    this.entities = new Map();
+let _canvas = undefined;
+let _ctx = undefined;
+const _entities = new Map();
+const _systems = [];
+let _playerID = undefined;
+let _isInitialized = false;
 
-    return this;
+function _registerSystem(system) {
+  if (isNullOrUndefined(system)) {
+    console.warn('Game: trying to register null system!');
+    return;
   }
+
+  const sysType = system.getType();
+  if (!isNullOrUndefined(_systems.find( (system) =>
+    (system.getType() === sysType)))) {
+    console.error('System already registered!');
+    return;
+  }
+
+  _systems.push(system);
+  system.onInit();
+}
+
+function _unRegisterSystem(system) {
+  if (isNullOrUndefined(system)) {
+    console.warn('Game: trying to unRegister null system!');
+    return;
+  }
+  _systems.splice(_systems.indexOf(system), 1);
+}
+
+function _registerEntity(entity) {
+  if (isNullOrUndefined(entity)) {
+    console.warn('Game: trying to register null entity!');
+    return;
+  }
+
+  for (const system of _systems) {
+    system.registerEntity(entity);
+  }
+  _entities.set(entity.getID(), entity);
+}
+
+function _unRegisterEntity(entity) {
+  if (isNullOrUndefined(entity)) {
+    console.warn('Game: trying to unregister null entity!');
+    return;
+  }
+  for (const system of _systems) {
+    system.unRegisterEntity(entity);
+  }
+  _entities.delete(entity.getID());
+}
+
+export default {
+  spawnNewEntity(archetype) {
+    const isPlayer = archetype === 'Player';
+    if (isPlayer && !isNullOrUndefined(_playerID)) {
+      console.error('Game.spawnNewEntity: ' + 'Player already exists!');
+      return;
+    }
+
+    const entity = createEntity(
+        archetype,
+        ResourceLoader.getArchetypeData(archetype));
+    if (isNullOrUndefined(entity)) {
+      console.error('Game.spawnNewEntity: ' + 'entity creation failed!');
+      return;
+    }
+    _registerEntity(entity);
+    if (isPlayer) {
+      _playerID = entity.getID();
+    }
+  },
+
+  unSpawnEntity(entity) {
+    _unRegisterEntity(entity);
+  },
+
+  getPlayer() {
+    return _entities.get(_playerID);
+  },
+
+  getEntity(id) {
+    if (isNullOrUndefined(id) || typeof id !== 'number') {
+      console.warn('Game.getEntity: invalid id');
+      return undefined;
+    }
+    return _entities.get(id);
+  },
 
   init() {
-    this.canvas = document.getElementById('game-area');
-    this.ctx = this.canvas.getContext('2d');
-    this.ctx.imageSmoothingEnabled = false;
+    if (_isInitialized) {
+      console.error('Game is already initialized!');
+      return;
+    }
 
-    const playerStart = new Vector2D(
-        this.canvas.width/2,
-        this.canvas.height/2);
+    _canvas = document.getElementById('game-area');
+    _ctx = _canvas.getContext('2d');
+    _ctx.imageSmoothingEnabled = false;
 
-    const player = new Player(
-        new Vector2D(playerStart.x, playerStart.y),
-        new Vector2D(50, 37));
-    this.entities.set(player.id, player);
-  }
+    _isInitialized = true;
+    _registerSystem(createControlSystem());
+    _registerSystem(createCollisionSystem());
+    _registerSystem(createPhysicsSystem());
+    _registerSystem(createVisualSystem());
+
+    this.spawnNewEntity('Player');
+    // TODO remove test code
+    this.spawnNewEntity('Frog');
+  },
 
   update(dt) {
-    for (const entity of this.entities.values()) {
-      entity.onUpdate(dt);
+    for (const system of _systems) {
+      if (isNullOrUndefined(system)) {
+        console.warn('Game.update :' + 'system undefined!');
+        continue;
+      }
+      system.onUpdate(dt);
     }
-  }
+  },
 
   render() {
-    // TODO maybe not clean the entire canvas on every frame
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    for (const entity of this.entities.values()) {
-      entity.onRender(this.ctx);
+    _ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+    for (const system of _systems.values()) {
+      if (isNullOrUndefined(system)) {
+        console.warn('Game.render :' + 'system undefined!');
+        continue;
+      }
+      system.onRender(_ctx);
     }
-  }
-};
+  },
 
-export default Game;
+  shutdown() {
+    if (!_isInitialized) {
+      console.warn('Game.shutdown :' + 'game is not initialized.');
+      return;
+    }
+    _isInitialized = false;
+
+    for (const system of _systems.values()) {
+      if (isNullOrUndefined(system)) {
+        continue;
+      }
+      system.onShutdown();
+    }
+  },
+};

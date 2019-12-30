@@ -1,60 +1,81 @@
 /* eslint-disable require-jsdoc */
 
-let _up = false;
-let _down = false;
-let _left = false;
-let _right = false;
+const _inputStates = new Map();
 
-function init() {
-  // Set up `onkeydown` event handler.
+class InputState {
+  constructor(isPressed = true) {
+    this.pressed = isPressed;
+    this.active = false;
+    return this;
+  }
+
+  onKeyDown() {
+    if (this.pressed) {
+      this.active = true;
+    } else {
+      this.pressed = true;
+    }
+  }
+
+  onKeyUp() {
+    this.pressed = false;
+    this.active = false;
+  }
+};
+
+function init(inputs) {
+  if (Array.isArray(inputs)) {
+    for (const input of inputs) {
+      _inputStates.set(input[0], new InputState(false));
+      _inputStates.set(input[1], new InputState(false));
+    }
+  }
+
+  // Set up `onkeydown` event handler
   document.onkeydown = (ev) => {
-    if (ev.key === 'd') {
-      _right = true;
+    let inputState = undefined;
+    let useKeyCode = false;
+    if (ev.key === undefined) {
+      inputState = _inputStates.get(ev.keyCode);
+      useKeyCode = true;
+    } else {
+      inputState = _inputStates.get(ev.key);
     }
-    if (ev.key === 'a') {
-      _left = true;
-    }
-    if (ev.key === 'w') {
-      _up = true;
-    }
-    if (ev.key === 's') {
-      _down = true;
+    if (inputState === undefined) {
+      if (useKeyCode) {
+        _inputStates.set(ev.keyCode, new InputState());
+      } else {
+        _inputStates.set(ev.key, new InputState());
+      }
+    } else {
+      inputState.onKeyDown();
     }
   };
 
-  // Set up `onkeyup` event handler.
+  // Set up `onkeyup` event handler
   document.onkeyup = (ev) => {
-    if (ev.key === 'd') {
-      _right = false;
+    let inputState = undefined;
+    let useKeyCode = false;
+    if (ev.key === undefined) {
+      inputState = _inputStates.get(ev.keyCode);
+      useKeyCode = true;
+    } else {
+      inputState = _inputStates.get(ev.key);
     }
-    if (ev.key === 'a') {
-      _left = false;
-    }
-    if (ev.key === 'w') {
-      _up = false;
-    }
-    if (ev.key === 's') {
-      _down = false;
+    if (inputState === undefined) {
+      if (useKeyCode) {
+        _inputStates.set(ev.keyCode, new InputState());
+      } else {
+        _inputStates.set(ev.key, new InputState());
+      }
+    } else {
+      inputState.onKeyUp();
     }
   };
 }
 
-// Define getters for each key
-function isPressedUp() {
-  return _up;
+function checkInputState(input) {
+  return _inputStates.get(input);
 }
 
-function isPressedDown() {
-  return _down;
-}
-
-function isPressedLeft() {
-  return _left;
-}
-
-function isPressedRight() {
-  return _right;
-}
-
-export default {
-  init, isPressedUp, isPressedDown, isPressedLeft, isPressedRight};
+export default {init, checkInputState};

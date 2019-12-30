@@ -6,7 +6,8 @@
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:5500",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}",
+            "runtimeExecutable": "/usr/bin/google-chrome-stable",
         }
     ]
 }

@@ -1,4 +1,5 @@
 /* eslint-disable require-jsdoc */
+/* eslint-disable comma-dangle */
 
 import {isNullOrUndefined} from './misc.mjs';
 
@@ -40,11 +41,46 @@ const IMAGE_PATHS = [
   '../assets/sprites/world/world-tiles.png',
   '../assets/sprites/world/world-trees.png'];
 
-const _images = new Map();
+// state
 let _isInit = false;
-let _callbackFn = {};
+let _readyCallback = undefined;
 
-function _init() {
+// data
+const _images = new Map();
+let _tileMapData = undefined;
+let _archetypeData = undefined;
+
+function _isReady() {
+  if (_images.size < IMAGE_PATHS.size ||
+    isNullOrUndefined(_tileMapData)||
+    isNullOrUndefined(_archetypeData)) {
+    return false;
+  }
+
+  // check all images have been loaded
+  for (const value of _images.values()) {
+    if (!isNullOrUndefined(value) && !value) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function _checkAndHandleReady() {
+  if (_isReady()) {
+    Object.freeze(_images);
+    Object.freeze(_tileMapData);
+    Object.freeze(_archetypeData);
+
+    if (!isNullOrUndefined(_readyCallback)) {
+      _readyCallback();
+    } else {
+      console.error('Resource loader: Ready callback undefined!');
+    }
+  }
+}
+
+function _loadImages() {
   for (const imgPath of IMAGE_PATHS) {
     const imgID = _getImgIDFromURL(imgPath);
     if (_images.get(imgID)) {
@@ -54,10 +90,10 @@ function _init() {
     _images.set(imgID, false);
     image.onload = () => {
       _images.set(imgID, image);
-      console.log('Image was loaded: ', imgPath, imgID);
-      if (_isReady()) {
-        _callbackFn();
+      if (window.dbgDisplay) {
+        console.log('Image was loaded: ', imgPath, imgID);
       }
+      _checkAndHandleReady();
     };
 
     image.onerror = () => {
@@ -65,19 +101,35 @@ function _init() {
     };
     image.src = imgPath;
   }
-  _isInit = true;
 }
 
-function _isReady() {
-  if (_images.size < IMAGE_PATHS.size) {
-    return false;
-  }
-  for (const value of _images.values()) {
-    if (!isNullOrUndefined(value) && !value) {
-      return false;
-    }
-  }
-  return true;
+function _loadTileMapData() {
+  const httpReq = new XMLHttpRequest();
+  httpReq.open('GET', window.location + '/assets/tilemap.json');
+  httpReq.responseType = 'json';
+  httpReq.send();
+  httpReq.onload = () => {
+    _tileMapData = httpReq.response;
+    _checkAndHandleReady();
+  };
+}
+
+function _loadArchetypeData() {
+  const httpReq = new XMLHttpRequest();
+  httpReq.open('GET', window.location + '/js/ecs/archetype.json');
+  httpReq.responseType = 'json';
+  httpReq.send();
+  httpReq.onload = () => {
+    _archetypeData = httpReq.response;
+    _checkAndHandleReady();
+  };
+}
+
+function _init() {
+  _loadImages();
+  _loadTileMapData();
+  _loadArchetypeData();
+  _isInit = true;
 }
 
 function _getImgIDFromURL(url) {
@@ -89,15 +141,31 @@ function _getImgIDFromURL(url) {
 export default {
   init(readyCallback) {
     if (!_isInit && typeof readyCallback === 'function') {
-      _callbackFn = readyCallback;
+      _readyCallback = readyCallback;
       _init();
     } else if (window.dbgDisplay) {
       console.warn('Resource loader already init!');
       return;
     }
   },
-  get(imageID) {
+
+  getImage(imageID) {
     return _images.get(imageID);
-  // eslint-disable-next-line comma-dangle
+  },
+
+  getTileImageCoordsByType(imgType) {
+    const coords = {x: 0, y: 0};
+    const tileMapCoords = _tileMapData.TilePositions[imgType];
+    coords.x = (tileMapCoords[0] - 1) * _tileMapData.TileSize.x;
+    coords.y = (tileMapCoords[1] - 1) * _tileMapData.TileSize.y;
+    return coords;
+  },
+
+  getArchetypeData(archetype) {
+    if (typeof archetype !== 'string' || isNullOrUndefined(archetype)) {
+      console.warn('Trying to get data for non-existent archetype!');
+      return undefined;
+    }
+    return _archetypeData[archetype];
   }
 };

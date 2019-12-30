@@ -3,26 +3,26 @@ import ResourceLoader from './utils/resource.mjs';
 
 /* eslint-disable require-jsdoc */
 class Sprite {
-  constructor(imgId, pos, size, speed, loop = false) {
-    this.imgId = imgId;
+  constructor(pos, size, speed, imgId, loop = false) {
     this.pos = pos;
     this.size = size;
-    this.speed = typeof speed === 'number' ? speed : 0;
+    this.speed = speed || 1;
+    this.imgId = imgId;
     this.loop = loop;
     this.index = 0;
-
-    const img = ResourceLoader.get(this.imgId);
-    if (img !== undefined) {
-      this.numFrames = {
-        x: img.width / this.size.x,
-        y: img.height / this.size.y};
-    }
 
     return this;
   }
 
   onUpdate(dt) {
     this.index += this.speed * dt;
+
+    const img = ResourceLoader.getImage(this.imgId);
+    if (img !== undefined) {
+      this.numFrames = {
+        x: img.width / this.size.x,
+        y: img.height / this.size.y};
+    }
   }
 
   onRender(ctx) {
@@ -51,16 +51,13 @@ class Sprite {
       y = Math.floor(frame / this.numFrames.y) * this.size.y;
     }
 
-    const image = ResourceLoader.get(this.imgId);
-    ctx.save();
-    ctx.translate(this.pos.x, this.pos.y);
+    const image = ResourceLoader.getImage(this.imgId);
     ctx.drawImage(
         image,
         x, y,
         this.size.x, this.size.y,
-        0, 0, // or 0, 0
+        Math.floor(this.pos.x), Math.floor(this.pos.y),
         Math.floor(this.size.x * 2.5), Math.floor(this.size.y * 2.5));
-    ctx.restore();
   }
 }
 

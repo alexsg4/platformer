@@ -1,0 +1,232 @@
+{
+    "Player": {
+        "Physics": {
+            "Position": {
+                "x": 0,
+                "y": 0
+            },
+            "Size": {
+                "x": 50,
+                "y": 37
+            },
+            "Speed": 5,
+            "Velocity": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "Controller": {
+            "Actions": {
+                "moveLeft": {
+                    "input" : ["a", "KeyA"],
+                    "hold" : false 
+                },
+                "moveRight": {
+                    "input" : ["d", "KeyD"],
+                    "hold" : false 
+                },
+                "crouch": {
+                    "input" : ["s", "KeyS"],
+                    "hold" : false 
+                },
+                "jump": {
+                    "input" : ["w", "KeyW"],
+                    "hold" : false 
+                },
+                "attack": {
+                    "input" :  [" ", "Space"],
+                    "hold" : false 
+                }
+            }
+        },
+        "Collider": {
+            "BoxSizeFactor": {
+                "x": 1,
+                "y": 1
+            }
+        },
+        "Visual": {
+            "AnimationStates": {
+                "idle": "player-idle",
+                "idleSword": "player-idle-sword",
+                "run": "player-run",
+                "runSword": "player-run-sword",
+                "jump": "player-jump",
+                "attack": "player-attack",
+                "die": "player-die"
+            },
+            "CurrentState": "idle",
+            "Speed": 0.15,
+            "IsFlippedX": false,
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
+        },
+        "Health": {
+            "HP": 100
+        },
+        "Weapon": {
+            "type": "melee",
+            "damage": 10
+        }
+    },
+    "Frog": {
+        "Physics": {
+            "Position": {
+                "x": 0,
+                "y": 0
+            },
+            "Size": {
+                "x": 16,
+                "y": 16
+            },
+            "Speed": 2,
+            "Velocity": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "Collider": {
+            "BoxSizeFactor": {
+                "x": 1,
+                "y": 1
+            }
+        },
+        "Visual": {
+            "AnimationStates": {
+                "all": "nm-frog"
+            },
+            "CurrentState": "all",
+            "Speed": 0.15,
+            "IsFlippedX": false,
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
+        },
+        "Health": {
+            "HP": 10
+        },
+        "Weapon": {
+            "type": "melee",
+            "damage": 10
+        }
+    },
+    "Skeleton": {
+        "Physics": {
+            "Position": {
+                "x": 0,
+                "y": 0
+            },
+            "Size": {
+                "x": 16,
+                "y": 16
+            },
+            "Speed": 2,
+            "Velocity": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "Collider": {
+            "BoxSizeFactor": {
+                "x": 1,
+                "y": 1
+            }
+        },
+        "Visual": {
+            "AnimationStates": {
+                "all": "nm-skeleton"
+            },
+            "CurrentState": "all",
+            "Speed": 1,
+            "IsFlippedX": false,
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
+        },
+        "Health": {
+            "HP": 20
+        },
+        "Weapon": {
+            "type": "melee",
+            "damage": 15
+        }
+    },
+    "Bat": {
+        "Physics": {
+            "Position": {
+                "x": 0,
+                "y": 0
+            },
+            "Size": {
+                "x": 16,
+                "y": 16
+            },
+            "Speed": 4,
+            "Velocity": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "Collider": {
+            "BoxSizeFactor": {
+                "x": 1,
+                "y": 1
+            }
+        },
+        "Visual": {
+            "AnimationStates": {
+                "all": "nm-bat"
+            },
+            "CurrentState": "all",
+            "Speed": 1,
+            "IsFlippedX": false,
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
+        },
+        "Health": {
+            "HP": 10
+        },
+        "Weapon": {
+            "type": "melee",
+            "damage": 7
+        }
+    },
+    "Ghost": {
+        "Physics": {
+            "Position": {
+                "x": 0,
+                "y": 0
+            },
+            "Size": {
+                "x": 16,
+                "y": 16
+            },
+            "Speed": 2,
+            "Velocity": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "Collider": {
+            "BoxSizeFactor": {
+                "x": 1,
+                "y": 1
+            }
+        },
+        "Visual": {
+            "AnimationStates": {
+                "all": "nm-ghost"
+            },
+            "CurrentState": "all",
+            "Speed": 1,
+            "IsFlippedX": false,
+            "CurrentDirectionX": "right",
+            "PrevDirectionX": "right"
+        },
+        "Health": {
+            "HP": 20
+        },
+        "Weapon": {
+            "type": "ranged",
+            "damage": 15
+        }
+    }
+}

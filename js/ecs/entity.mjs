@@ -1,83 +1,55 @@
 /* eslint-disable require-jsdoc */
-import Vector2D from '../utils/math/vector2d.mjs';
+import generateUID from '../utils/counter.mjs';
+import createComponent from './component.mjs';
 import {isNullOrUndefined} from '../utils/misc.mjs';
-import Component from './component.mjs';
-import Unique from './unique.mjs';
-import Sprite from '../sprite.mjs';
 
-const ANIM_SPEED = 0.2;
+class Entity {
+  constructor(archetype, componentData) {
+    const _id = generateUID();
+    const _archetype = archetype;
+    const _components = new Map();
 
-class Entity extends Unique {
-  constructor(pos, size, imgId) {
-    super();
-    this.position = pos instanceof Vector2D ? pos : new Vector2D();
-    this.size = size instanceof Vector2D ? size : new Vector2D(1, 1);
-    this.imgId = imgId;
-
-    const position = this.position;
-    const width = this.size.x;
-    const height = this.size.y;
-
-    this.collisionBox = {
-      tLeft: {
-        x: position.x - width/2,
-        y: position.y - height/2,
-      },
-      tRight: {
-        x: position.x + width/2,
-        y: position.y - height/2,
-      },
-      bRight: {
-        x: position.x + width/2,
-        y: position.y + height/2,
-      },
-      bLeft: {
-        x: position.x - width/2,
-        y: position.y + height/2,
-      },
+    this.getID = () => {
+      return _id;
     };
 
-    this.sprite = new Sprite(
-        this.imgId,
-        this.position,
-        this.size,
-        ANIM_SPEED, true);
-    this.components = new Map();
+    this.getArchetype = () => {
+      return _archetype;
+    };
 
-    return this;
-  }
+    this.attachComponent = (component) => {
+      if (!isNullOrUndefined(component)) {
+        _components.set(component.getID(), component);
+        component.onAttach(_id);
+      }
+    };
 
-  attachComponents(...args) {
-    const components = Array.from(args);
+    this.getComponentByType = (type) => {
+      let compData = undefined;
+      for (const component of _components.values()) {
+        if (component.getType() === type) {
+          compData = component.getConfig();
+          break;
+        }
+      }
+      return compData;
+    };
 
-    for (const comp of components) {
-      if (comp instanceof Component && !isNullOrUndefined(comp)) {
-        this.components.set(comp.id, comp);
-        comp.onAttach(this);
+    if (!isNullOrUndefined(archetype) && !isNullOrUndefined(componentData)) {
+      for (const componentConfig of Object.entries(componentData)) {
+        const componentToAdd = createComponent(componentConfig);
+        this.attachComponent(componentToAdd);
       }
     }
-  }
-
-  onUpdate(dt) {
-    this.sprite.onUpdate(dt);
-
-    for (const comp of this.components.values()) {
-      comp.onUpdate(dt);
-    }
-  }
-
-  onRender(ctx) {
-    if (isNullOrUndefined(ctx)) {
-      console.error('Entity onRender: Canvas context undefined!');
-      return;
-    }
-
-    this.sprite.onRender(ctx);
-
-    for (const comp of this.components.values()) {
-      comp.onRender(ctx);
-    }
+    return this;
   }
 };
 
-export default Entity;
+// make Entity class 'final'
+const createEntity = (archetype, params) => {
+  let entity = new Entity(archetype, params);
+  entity = Object.freeze(entity);
+  return entity;
+};
+
+export default createEntity;
