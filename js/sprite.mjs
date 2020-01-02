@@ -57,7 +57,7 @@ class Sprite {
         x, y,
         this.size.x, this.size.y,
         Math.floor(this.pos.x), Math.floor(this.pos.y),
-        Math.floor(this.size.x * 2.5), Math.floor(this.size.y * 2.5));
+        this.size.x, this.size.y);
   }
 }
 
