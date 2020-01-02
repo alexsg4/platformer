@@ -1,13 +1,9 @@
 /* eslint-disable require-jsdoc */
 import System from '../system.mjs';
-import Vector2D from '../../utils/math/vector2d.mjs';
+import World from '../../world.mjs';
 
 const SYSTEM_TYPE = 'Collision';
 const COMPONENT_TYPE = 'Collider';
-
-// TODO remove magic numbers
-const VSIZE_X = 100;
-const VSIZE_Y = 100;
 
 class CollisionSystem extends System {
   constructor() {
@@ -33,20 +29,18 @@ class CollisionSystem extends System {
       return collisionOccurred;
     };
 
-    this.checkAndHandleOOB = (entity) => {
+    this.checkAndHandleWorldCollision = (entity) => {
       if (entity !== undefined) {
         const physics = entity.getComponentByType('Physics');
         if (physics !== undefined) {
-          let velX = physics.Velocity.x;
-          let velY = physics.Velocity.y;
-          const nextPosX = physics.Position.x + physics.Size.x * 2.5 + velX;
-          const nextPosY = physics.Position.y + physics.Size.y * 2.5 + velY;
+          const xNext = physics.Position.x + physics.Size.x/2;
+          const yNext = physics.Position.y + physics.Size.y;
 
-          if (nextPosX > VSIZE_X || nextPosX < 0) {
-            velX = 0;
-          }
-          if (nextPosY > VSIZE_Y || nextPosY < 0) {
-            velY = 0;
+          if (World.isSolidTileAtPosition(
+              Math.floor(xNext),
+              Math.floor(yNext))
+          ) {
+            physics.Velocity.y = 0;
           }
         }
       }
@@ -63,8 +57,27 @@ class CollisionSystem extends System {
 
   onUpdate(dt) {
     for (const entity of this._registeredEntities.values()) {
-      this.checkAndHandleOOB(entity);
+      this.checkAndHandleWorldCollision(entity);
     }
+  }
+
+  onRender(ctx) {
+    // TODO disable debug code
+    ctx.save();
+    ctx.globalAlpha = 0.4;
+    for (const entity of this._registeredEntities.values()) {
+      const physics = entity.getComponentByType('Physics');
+      if (physics === undefined ) {
+        continue;
+      }
+      ctx.fillRect(
+          Math.floor(physics.Position.x),
+          Math.floor(physics.Position.y),
+          physics.Size.x/2,
+          physics.Size.y,
+      );
+    }
+    ctx.restore();
   }
 
   onShutdown() {

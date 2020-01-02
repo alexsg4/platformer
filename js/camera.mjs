@@ -3,9 +3,9 @@ import {isNullOrUndefined} from './utils/misc.mjs';
 
 class Camera {
   constructor(followedEntity, width, height) {
-    let _width = width;
-    let _height = height;
-    let _entity = followedEntity;
+    const _width = width;
+    const _height = height;
+    const _entity = followedEntity;
     let _posX = 0;
     let _posY = 0;
 
@@ -36,7 +36,7 @@ class Camera {
       }
 
       _posX = Math.floor(position.x + size.x - _width/2);
-      _posY = Math.floor(position.y + size.y - _height/2);
+      _posY = Math.floor(position.y + size.y - _height/2) * 1.5;
     };
   }
 };

@@ -5,11 +5,13 @@ import ResourceLoader from './utils/resource.mjs';
 import createEntity from './ecs/entity.mjs';
 
 import createControlSystem from './ecs/systems/control.mjs';
-import createCollisionSystem from './ecs/systems/collision.mjs';
 import createPhysicsSystem from './ecs/systems/physics.mjs';
+import createCollisionSystem from './ecs/systems/collision.mjs';
+import createMovementSystem from './ecs/systems/movement.mjs';
 import createVisualSystem from './ecs/systems/visual.mjs';
 
 import Camera from './camera.mjs';
+import World from './world.mjs';
 
 let _canvas = undefined;
 let _ctx = undefined;
@@ -18,6 +20,8 @@ const _entities = new Map();
 const _systems = [];
 let _playerID = undefined;
 let _isInitialized = false;
+
+const SCALE = 2;
 
 function _registerSystem(system) {
   if (isNullOrUndefined(system)) {
@@ -116,14 +120,15 @@ export default {
 
     _isInitialized = true;
     _registerSystem(createControlSystem());
-    _registerSystem(createCollisionSystem());
     _registerSystem(createPhysicsSystem());
+    _registerSystem(createCollisionSystem());
+    _registerSystem(createMovementSystem());
     _registerSystem(createVisualSystem());
 
     this.spawnNewEntity('Player');
     _camera = new Camera(this.getPlayer(), _canvas.width, _canvas.height);
     // TODO remove test code
-    this.spawnNewEntity('Frog');
+    //this.spawnNewEntity('Frog');
   },
 
   update(dt) {
@@ -142,6 +147,8 @@ export default {
     const cameraPos = _camera.getPosition();
     _ctx.save();
     _ctx.translate(-cameraPos.x, -cameraPos.y);
+    //_ctx.scale(SCALE, SCALE);
+    World.draw(_ctx);
     for (const system of _systems.values()) {
       if (isNullOrUndefined(system)) {
         console.warn('Game.render :' + 'system undefined!');
