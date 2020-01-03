@@ -1,21 +1,18 @@
 /* eslint-disable require-jsdoc */
 import System from '../system.mjs';
-import Vector2D from '../../utils/math/vector2d.mjs';
+import World from '../../world.mjs';
+import {isNullOrUndefined} from '../../utils/misc.mjs';
 
 const SYSTEM_TYPE = 'Collision';
 const COMPONENT_TYPE = 'Collider';
-
-// TODO remove magic numbers
-const VSIZE_X = 100;
-const VSIZE_Y = 100;
 
 class CollisionSystem extends System {
   constructor() {
     super(SYSTEM_TYPE, COMPONENT_TYPE);
 
-    const checkCollision = (entityA, entityB) => {
+    const checkCollisionEntity = (entityA, entityB) => {
       let collisionOccurred = undefined;
-      if (entityA !== undefined && entityB !== undefined) {
+      if (!isNullOrUndefined(entityA) && !isNullOrUndefined(entityB)) {
         physicsA = entityA.getComponentByType('Physics');
         colliderSizeA = entityA.getComponentByType('Colldier').BoxSizeFactor;
         physicsB = entityB.getComponentByType('Physics');
@@ -33,22 +30,50 @@ class CollisionSystem extends System {
       return collisionOccurred;
     };
 
-    this.checkAndHandleOOB = (entity) => {
-      if (entity !== undefined) {
-        const physics = entity.getComponentByType('Physics');
-        if (physics !== undefined) {
-          let velX = physics.Velocity.x;
-          let velY = physics.Velocity.y;
-          const nextPosX = physics.Position.x + physics.Size.x * 2.5 + velX;
-          const nextPosY = physics.Position.y + physics.Size.y * 2.5 + velY;
+    this.checkAndHandleWorldCollision = (entity) => {
+      if (isNullOrUndefined(entity)) {
+        console.error('Entity null or undefined!');
+        return;
+      }
+      const physics = entity.getComponentByType('Physics');
+      if (isNullOrUndefined(physics)) {
+        console.error('Entity physics component null or undefined!');
+        return;
+      }
 
-          if (nextPosX > VSIZE_X || nextPosX < 0) {
-            velX = 0;
-          }
-          if (nextPosY > VSIZE_Y || nextPosY < 0) {
-            velY = 0;
-          }
-        }
+      const xCenter = Math.floor(physics.Position.x + physics.Size.x/2);
+      const yCenter = Math.floor(physics.Position.y + physics.Size.y/2);
+
+      const yTop = Math.floor(physics.Position.y);
+      const yBottom = Math.floor(physics.Position.y + physics.Size.y) + 1;
+
+      const xRight = Math.floor(physics.Position.x + physics.Size.x) + 1;
+      const xLeft = Math.floor(physics.Position.x);
+
+      const tileSize = World.getTileSize();
+
+      // Bottom collision
+      if (World.isSolidTileAtPosition(xCenter, yBottom)) {
+        const row = Math.floor(yBottom/tileSize)*tileSize;
+        physics.Velocity.y -= Math.abs(yBottom-row);
+      }
+
+      // Top collision
+      if (World.isSolidTileAtPosition(xCenter, yTop)) {
+        const row = Math.floor(yTop/tileSize)*tileSize;
+        physics.Velocity.y += Math.abs(yTop-row);
+      }
+
+      // Left side collision
+      if (World.isSolidTileAtPosition(xLeft, yCenter)) {
+        const col = Math.floor(xLeft/tileSize)*tileSize;
+        physics.Velocity.x += Math.abs(xLeft-col);
+      }
+
+      // Right side collision
+      if (World.isSolidTileAtPosition(xRight, yCenter)) {
+        const col = Math.floor(xRight/tileSize)*tileSize;
+        physics.Velocity.x -= Math.abs(xRight-col);
       }
     };
   }
@@ -63,13 +88,32 @@ class CollisionSystem extends System {
 
   onUpdate(dt) {
     for (const entity of this._registeredEntities.values()) {
-      this.checkAndHandleOOB(entity);
+      this.checkAndHandleWorldCollision(entity);
     }
+  }
+
+  onRender(ctx) {
+    // TODO disable debug code
+    ctx.save();
+    ctx.strokeStyle='red';
+    for (const entity of this._registeredEntities.values()) {
+      const physics = entity.getComponentByType('Physics');
+      if (physics === undefined ) {
+        continue;
+      }
+      ctx.strokeRect(
+          Math.floor(physics.Position.x),
+          Math.floor(physics.Position.y),
+          physics.Size.x,
+          physics.Size.y,
+      );
+    }
+    ctx.restore();
   }
 
   onShutdown() {
     super.onShutdown();
-  }
+  } 
 };
 
 const createCollisionSystem = () => {

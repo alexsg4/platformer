@@ -2,10 +2,12 @@
 import {isNullOrUndefined} from './utils/misc.mjs';
 
 class Camera {
-  constructor(followedEntity, width, height) {
-    let _width = width;
-    let _height = height;
-    let _entity = followedEntity;
+  constructor(followedEntity, width, height, zoom, worldInfo) {
+    const _width = width;
+    const _height = height;
+    const _entity = followedEntity;
+    const _worldInfo = worldInfo;
+    const _scale = zoom;
     let _posX = 0;
     let _posY = 0;
 
@@ -35,8 +37,8 @@ class Camera {
         return;
       }
 
-      _posX = Math.floor(position.x + size.x - _width/2);
-      _posY = Math.floor(position.y + size.y - _height/2);
+      _posX = Math.floor(position.x + size.x/2 - _width/(2*_scale));
+      _posY = Math.floor(position.y + size.y/2 - _height/(2*_scale));
     };
   }
 };
