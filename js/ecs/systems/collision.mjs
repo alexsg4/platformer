@@ -113,7 +113,7 @@ class CollisionSystem extends System {
 
   onShutdown() {
     super.onShutdown();
-  } 
+  }
 };
 
 const createCollisionSystem = () => {
