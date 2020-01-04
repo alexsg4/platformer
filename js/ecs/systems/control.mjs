@@ -15,6 +15,8 @@ class ControlSystem extends System {
     const speed = physics.Speed;
     const velocity = physics.Velocity;
     const visualComp = entity.getComponentByType('Visual');
+    const weapon = entity.getComponentByType('Weapon');
+    weapon.isAttacking = false;
 
     switch (action) {
       case 'moveLeft':
@@ -32,7 +34,6 @@ class ControlSystem extends System {
       case 'crouch':
         velocity.y += speed;
         // TODO change anim
-        // TODO shrink collision box
         break;
       case 'jump':
         velocity.y -= speed;
@@ -40,7 +41,7 @@ class ControlSystem extends System {
         break;
       case 'attack':
         visualComp.CurrentState = 'attack';
-        // TODO deal damage
+        weapon.isAttacking = true;
         break;
       default:
         break;

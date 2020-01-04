@@ -43,8 +43,8 @@ class VisualSystem extends System {
     }
   }
 
-  unregisterEntity(entity) {
-    if (super.unregisterEntity(entity)) {
+  unRegisterEntity(entity) {
+    if (super.unRegisterEntity(entity)) {
       this._sprites.delete(entity.getID());
     }
   }

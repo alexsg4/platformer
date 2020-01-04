@@ -25,7 +25,9 @@
     "url": "https://github.com/alexsg4/platformer/issues"
   },
   "homepage": "https://github.com/alexsg4/platformer#readme",
-  "dependencies": {},
+  "dependencies": {
+    "sweetalert2": "^9.5.4"
+  },
   "devDependencies": {
     "eslint": "^6.7.2",
     "eslint-config-google": "^0.14.0"
