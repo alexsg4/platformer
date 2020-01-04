@@ -6,6 +6,12 @@ class System {
     this._type = typeof systemType === 'string' ? systemType : undefined;
     this._componentType = typeof compType === 'string' ? compType : undefined;
     this._registeredEntities = new Map();
+    this._playerID = null;
+    this._needGameStop = false;
+  }
+
+  hasRequestedGameOver() {
+    return this._needGameStop;
   }
 
   getType() {
@@ -22,7 +28,11 @@ class System {
       console.warn('Entity already registered.!');
       return false;
     }
-    this._registeredEntities.set(entity.getID(), entity);
+    const entityID = entity.getID();
+    if (entity.getArchetype() === 'Player') {
+      this._playerID = entityID;
+    }
+    this._registeredEntities.set(entityID, entity);
     return true;
   }
 
@@ -36,7 +46,8 @@ class System {
   }
 
   onInit() {
-    return;
+    this._playerID = null;
+    this._needGameStop = false;
   }
 
   onUpdate(dt) {

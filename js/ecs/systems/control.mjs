@@ -45,7 +45,7 @@ class ControlSystem extends System {
       default:
         break;
     }
-    console.log(+physics.Position.x + '\t' +physics.Position.y);
+    // console.log(+physics.Position.x + '\t' +physics.Position.y);
   }
 
   handleUserInput(entity) {
@@ -80,8 +80,7 @@ class ControlSystem extends System {
 };
 
 const createControlSystem = () => {
-  let controlSystem = new ControlSystem();
-  controlSystem = Object.freeze(controlSystem);
+  const controlSystem = new ControlSystem();
   return controlSystem;
 };
 

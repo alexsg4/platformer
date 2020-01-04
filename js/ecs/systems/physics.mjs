@@ -3,8 +3,8 @@
 import System from '../system.mjs';
 
 // TODO load constants from json
-const GRAVITY = 5;
-const FRICTION = 0;
+const GRAVITY = 2;
+const FRICTION = 0.25;
 const SYSTEM_TYPE = 'Physics';
 const COMPONENT_TYPE = 'Physics';
 
@@ -17,22 +17,15 @@ class PhysicsSystem extends System {
     for (const entity of this._registeredEntities.values()) {
       const componentToUpdate = entity.getComponentByType(SYSTEM_TYPE);
       const velocity = componentToUpdate['Velocity'];
-      velocity.x *= (1- FRICTION);
-      // TODO enable after world is created
-      velocity.y += GRAVITY*FRICTION;
-
-      const position = componentToUpdate['Position'];
-      position.x += velocity.x;
-      position.y += velocity.y;
-      velocity.x = 0;
-      velocity.y = 0;
+      velocity.x *= (1 - FRICTION);
+      velocity.y += GRAVITY;
+      velocity.y *= (1 - FRICTION);
     }
   }
 };
 
 const createPhysicsSystem = () => {
-  let physicsSystem = new PhysicsSystem();
-  physicsSystem = Object.freeze(physicsSystem);
+  const physicsSystem = new PhysicsSystem();
   return physicsSystem;
 };
 
