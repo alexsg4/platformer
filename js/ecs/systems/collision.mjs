@@ -30,6 +30,54 @@ class CollisionSystem extends System {
       return collisionOccurred;
     };
 
+    this.checkAndHandleOOB = (entity) => {
+      if (isNullOrUndefined(entity)) {
+        console.error('Entity null or undefined!');
+        return;
+      }
+      const physics = entity.getComponentByType('Physics');
+      if (isNullOrUndefined(physics)) {
+        console.error('Entity physics component null or undefined!');
+        return;
+      }
+
+      const yTop = Math.floor(physics.Position.y);
+      const yBottom = Math.floor(physics.Position.y + physics.Size.y) + 1;
+
+      const xRight = Math.floor(physics.Position.x + physics.Size.x) + 1;
+      const xLeft = Math.floor(physics.Position.x);
+
+      const tileSize = World.getTileSize();
+      const worldSize = World.getSize();
+
+      const pushbackForce = 2;
+
+      // TODO tweak oob limits
+      // Bottom exit
+      if (yBottom >= worldSize.row * tileSize) {
+        physics.Position.y -= pushbackForce;
+        physics.Velocity.y = 0;
+      }
+
+      // Top exit
+      if (yTop < 0) {
+        physics.Position.y += pushbackForce;
+        physics.Velocity.y = 0;
+      }
+
+      // Left side exit
+      if (xLeft < 0) {
+        physics.Position.x += pushbackForce;
+        physics.Velocity.x = 0;
+      }
+
+      // Right side exit
+      if (xRight > worldSize.col * tileSize) {
+        physics.Position.x -= pushbackForce;
+        physics.Velocity.x = 0;
+      }
+    };
+
     this.checkAndHandleWorldCollision = (entity) => {
       if (isNullOrUndefined(entity)) {
         console.error('Entity null or undefined!');
@@ -89,6 +137,7 @@ class CollisionSystem extends System {
   onUpdate(dt) {
     for (const entity of this._registeredEntities.values()) {
       this.checkAndHandleWorldCollision(entity);
+      this.checkAndHandleOOB(entity);
     }
   }
 

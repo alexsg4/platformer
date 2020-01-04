@@ -3,6 +3,7 @@
 import {isNullOrUndefined} from './utils/misc.mjs';
 import ResourceLoader from './utils/resource.mjs';
 const DEBUG_TEXT = false;
+const DEBUG_OVERLAY = true;
 
 const ANY = 'ANY';
 const TILE_GRAMMAR = {
@@ -50,8 +51,8 @@ let WORLD_TILES = [
   null, null, 'DL2', 'DL1', 'DL1', 'DL2', 'DL1', 'DL2',
 ];
 
-const DEFAULT_MAP_SIZE = {x: 8, y: 8};
-const WORLD_MAP_SIZE = {x: 8, y: 8};
+const DEFAULT_MAP_SIZE = {col: 8, row: 8};
+const WORLD_MAP_SIZE = {col: 8, row: 8};
 const TILE_SIZE = 16;
 
 function isSolidTile(tileType) {
@@ -87,18 +88,18 @@ function drawTiles(ctx) {
         console.warn('Tile Image coords not found for: ' + tileType);
         continue;
       }
-      const x = i % WORLD_MAP_SIZE.y * TILE_SIZE;
-      const y = Math.floor(i / WORLD_MAP_SIZE.x) * TILE_SIZE;
+      const col = i % WORLD_MAP_SIZE.col * TILE_SIZE;
+      const row = Math.floor(i / WORLD_MAP_SIZE.col) * TILE_SIZE;
 
       if (DEBUG_TEXT) {
-        console.log('Drawing tile ' + tileType +' at: ' + x + ' ' + y);
+        console.log('Drawing tile ' + tileType +' at: ' + col + ' ' + row);
       }
 
       ctx.drawImage(
           tileAtlas,
           tileImgCoords.x, tileImgCoords.y,
           TILE_SIZE, TILE_SIZE,
-          x, y,
+          col, row,
           TILE_SIZE, TILE_SIZE,
       );
     }
@@ -116,12 +117,12 @@ function drawGrid(ctx) {
   ctx.lineWidth = 1;
   ctx.fillStyle = 'red';
   ctx.globalAlpha = 0.4;
-  for (let c = 0; c < WORLD_MAP_SIZE.x; c++) {
-    for (let r = 0; r < WORLD_MAP_SIZE.x; r++) {
+  for (let c = 0; c < WORLD_MAP_SIZE.col; c++) {
+    for (let r = 0; r < WORLD_MAP_SIZE.row; r++) {
       x = Math.floor(c * TILE_SIZE);
       y = Math.floor(r * TILE_SIZE);
       ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
-      if (isSolidTile(WORLD_TILES[c + r * WORLD_MAP_SIZE.x])) {
+      if (isSolidTile(WORLD_TILES[c + r * WORLD_MAP_SIZE.col])) {
         ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
       }
     }
@@ -168,32 +169,34 @@ function getAnyTile() {
 }
 
 export default {
-  init(sizeX, sizeY) {
-    WORLD_MAP_SIZE.x = typeof sizeX === 'number' ? sizeX : DEFAULT_MAP_SIZE.x;
-    WORLD_MAP_SIZE.y = typeof sizeY === 'number' ? sizeY : DEFAULT_MAP_SIZE.y;
+  init(cols, rows) {
+    WORLD_MAP_SIZE.col = typeof cols === 'number' ? cols : DEFAULT_MAP_SIZE.col;
+    WORLD_MAP_SIZE.row = typeof rows === 'number' ? rows : DEFAULT_MAP_SIZE.row;
 
-    WORLD_TILES = new Array(WORLD_MAP_SIZE.x * WORLD_MAP_SIZE.y).fill(null);
+    WORLD_TILES = new Array(WORLD_MAP_SIZE.col * WORLD_MAP_SIZE.row).fill(null);
     const initialTile = 'WKS';
-    const startingTilePos = WORLD_MAP_SIZE.x + 1;
+    const emptyRows = 5;
+    const startingTilePos = emptyRows * WORLD_MAP_SIZE.col + 1;
     WORLD_TILES[startingTilePos] = initialTile;
 
     // eslint-disable-next-line max-len
-    for (let i = startingTilePos + 1; i < WORLD_MAP_SIZE.x * WORLD_MAP_SIZE.y; i++) {
+    for (let i = startingTilePos + 1; i < WORLD_TILES.length; i++) {
       WORLD_TILES[i] = getNextTile(WORLD_TILES[i-1]);
     }
   },
 
   draw(ctx) {
     drawTiles(ctx);
-    // TODO disable
-    drawGrid(ctx);
+    if (DEBUG_OVERLAY) {
+      drawGrid(ctx);
+    }
   },
 
   isSolidTileAtPosition(x, y) {
     const col = Math.floor(x/TILE_SIZE);
     const row = Math.floor(y/TILE_SIZE);
-    if (col < 0 || col >= WORLD_MAP_SIZE.x ||
-      row < 0 || row >= WORLD_MAP_SIZE.y) {
+    if (col < 0 || col >= WORLD_MAP_SIZE.col ||
+      row < 0 || row >= WORLD_MAP_SIZE.row) {
       if (DEBUG_TEXT) {
         console.warn('Tile not preset at row: ', row, ' column: ', col);
       }
@@ -202,7 +205,7 @@ export default {
     if (DEBUG_TEXT) {
       console.log('Tile test row: ', row, ' column: ', col);
     }
-    return isSolidTile(WORLD_TILES[col + row * WORLD_MAP_SIZE.x]);
+    return isSolidTile(WORLD_TILES[col + row * WORLD_MAP_SIZE.col]);
   },
 
   getSize() {
