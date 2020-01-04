@@ -125,20 +125,26 @@ class CollisionSystem extends System {
       }
     };
 
-    this.handlePlayerCollisionWithEntity = (entity) => {
+    this.handlePlayerCollisionWithEntity = (player, entity) => {
       if (isNullOrUndefined(entity)) {
         console.error('Invalid Entity!');
         return;
       }
+
+      const playerHealth = player.getComponentByType('Health');
+      const enemyHealth = entity.getComponentByType('Health');
+
+      const playerWeapon = player.getComponentByType('Weapon');
+      const enemyWeapon = entity.getComponentByType('Weapon');
+
       switch (entity.getArchetype()) {
         case 'Frog':
-          console.log('Handle collision with Frog');
-          break;
-        case 'Bat':
-          console.log('Handle collision with Bat');
-          break;
         case 'Skeleton':
-          console.log('Handle collision with Skeleton');
+        case 'Bat':
+          if (playerWeapon.isAttacking) {
+            enemyHealth.HP = Math.max(0, enemyHealth.HP - playerWeapon.damage);
+          }
+          playerHealth.HP = Math.max(0, playerHealth.HP - enemyWeapon.damage);
           break;
         default:
           console.log('Handle collision with ', entity.getArchetype());
@@ -151,20 +157,20 @@ class CollisionSystem extends System {
     return super.registerEntity(entity);
   }
 
-  unregisterEntity(entity) {
+  unRegisterEntity(entity) {
     return super.unRegisterEntity(entity);
   }
 
   onUpdate(dt) {
+    const player = this._registeredEntities.get(this._playerID);
+
     for (const entity of this._registeredEntities.values()) {
       this.checkAndHandleWorldCollision(entity);
       this.checkAndHandleOOB(entity);
 
-      const player = this._registeredEntities.get(this._playerID);
-      if (entity.getID() !== this._playerID &&
-          this.checkCollisionBetween(player, entity)) {
-        // DO stuff
-        this.handlePlayerCollisionWithEntity(entity);
+      const collisionOccurred = this.checkCollisionBetween(player, entity);
+      if (entity.getID() !== this._playerID && collisionOccurred) {
+        this.handlePlayerCollisionWithEntity(player, entity);
       }
     }
   }

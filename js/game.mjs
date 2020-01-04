@@ -9,6 +9,7 @@ import createPhysicsSystem from './ecs/systems/physics.mjs';
 import createCollisionSystem from './ecs/systems/collision.mjs';
 import createMovementSystem from './ecs/systems/movement.mjs';
 import createVisualSystem from './ecs/systems/visual.mjs';
+import createHealthSystem from './ecs/systems/health.mjs';
 
 import Camera from './camera.mjs';
 import World from './world.mjs';
@@ -125,8 +126,12 @@ export default {
     _registerSystem(createCollisionSystem());
     _registerSystem(createMovementSystem());
     _registerSystem(createVisualSystem());
+    _registerSystem(createHealthSystem(this.unSpawnEntity));
 
     this.spawnNewEntity('Player');
+    // TODO remove test code
+    this.spawnNewEntity('Frog');
+
     const worldInfo = {
       mapSize: World.getSize(),
       tileSize: World.getTileSize(),
@@ -138,8 +143,6 @@ export default {
         SCALE,
         worldInfo,
     );
-    // TODO remove test code
-    this.spawnNewEntity('Frog');
   },
 
   update(dt) {
