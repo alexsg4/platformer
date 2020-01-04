@@ -41,8 +41,7 @@ class MovementSystem extends System {
 };
 
 const createMovementSystem = () => {
-  let system = new MovementSystem();
-  system = Object.freeze(system);
+  const system = new MovementSystem();
   return system;
 };
 

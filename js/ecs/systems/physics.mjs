@@ -25,8 +25,7 @@ class PhysicsSystem extends System {
 };
 
 const createPhysicsSystem = () => {
-  let physicsSystem = new PhysicsSystem();
-  physicsSystem = Object.freeze(physicsSystem);
+  const physicsSystem = new PhysicsSystem();
   return physicsSystem;
 };
 

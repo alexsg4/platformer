@@ -80,8 +80,7 @@ class ControlSystem extends System {
 };
 
 const createControlSystem = () => {
-  let controlSystem = new ControlSystem();
-  controlSystem = Object.freeze(controlSystem);
+  const controlSystem = new ControlSystem();
   return controlSystem;
 };
 

@@ -78,8 +78,7 @@ class VisualSystem extends System {
 };
 
 const createVisualSystem = () => {
-  let system = new VisualSystem();
-  system = Object.freeze(system);
+  const system = new VisualSystem();
   return system;
 };
 

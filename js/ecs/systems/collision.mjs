@@ -10,20 +10,20 @@ class CollisionSystem extends System {
   constructor() {
     super(SYSTEM_TYPE, COMPONENT_TYPE);
 
-    const checkCollisionEntity = (entityA, entityB) => {
+    this.checkCollisionBetween = (entityA, entityB) => {
       let collisionOccurred = undefined;
       if (!isNullOrUndefined(entityA) && !isNullOrUndefined(entityB)) {
-        physicsA = entityA.getComponentByType('Physics');
-        colliderSizeA = entityA.getComponentByType('Colldier').BoxSizeFactor;
-        physicsB = entityB.getComponentByType('Physics');
-        colliderSizeB = entityB.getComponentByType('Colldier').BoxSizeFactor;
+        const physicsA = entityA.getComponentByType('Physics');
+        const colliderSizeA = entityA.getComponentByType('Collider').BoxSizeFactor;
+        const physicsB = entityB.getComponentByType('Physics');
+        const colliderSizeB = entityB.getComponentByType('Collider').BoxSizeFactor;
 
         if (physicsA && physicsB && colliderSizeA && colliderSizeB ) {
           collisionOccurred = (
-            physicsA.Position.x < physicsB.Position.x + physicsB.Size.x &&
-            physicsA.Position.x + physicsA.Size.x > physicsB.Position.x &&
-            physicsA.Position.y < physicsB.Position.y + physicsB.Size.y &&
-            physicsA.Position.y + physicsA.Size.y > physicsB.Position.y
+            physicsA.Position.x < physicsB.Position.x + physicsB.Size.x * colliderSizeB.x &&
+            physicsA.Position.y < physicsB.Position.y + physicsB.Size.y * colliderSizeB.y &&
+            physicsB.Position.x < physicsA.Position.x + physicsA.Size.x * colliderSizeA.x &&
+            physicsB.Position.y < physicsA.Position.y + physicsA.Size.y * colliderSizeA.y
           );
         }
       }
@@ -124,6 +124,27 @@ class CollisionSystem extends System {
         physics.Velocity.x -= Math.abs(xRight-col);
       }
     };
+
+    this.handlePlayerCollisionWithEntity = (entity) => {
+      if (isNullOrUndefined(entity)) {
+        console.error('Invalid Entity!');
+        return;
+      }
+      switch (entity.getArchetype()) {
+        case 'Frog':
+          console.log('Handle collision with Frog');
+          break;
+        case 'Bat':
+          console.log('Handle collision with Bat');
+          break;
+        case 'Skeleton':
+          console.log('Handle collision with Skeleton');
+          break;
+        default:
+          console.log('Handle collision with ', entity.getArchetype());
+          break;
+      }
+    };
   }
 
   registerEntity(entity) {
@@ -138,6 +159,13 @@ class CollisionSystem extends System {
     for (const entity of this._registeredEntities.values()) {
       this.checkAndHandleWorldCollision(entity);
       this.checkAndHandleOOB(entity);
+
+      const player = this._registeredEntities.get(this._playerID);
+      if (entity.getID() !== this._playerID &&
+          this.checkCollisionBetween(player, entity)) {
+        // DO stuff
+        this.handlePlayerCollisionWithEntity(entity);
+      }
     }
   }
 
@@ -166,8 +194,7 @@ class CollisionSystem extends System {
 };
 
 const createCollisionSystem = () => {
-  let system = new CollisionSystem();
-  system = Object.freeze(system);
+  const system = new CollisionSystem();
   return system;
 };
 
