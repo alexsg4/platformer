@@ -2,6 +2,7 @@
 import Game from './js/game.mjs';
 import ResourceLoader from './js/utils/resource.mjs';
 import InputManager from './js/utils/input.mjs';
+import Swal from './node_modules/sweetalert2/src/sweetalert2.js';
 
 window.dbgDisplay = false;
 
