@@ -28,7 +28,7 @@ main {
     align-items: center;
 }
 
-main #game-area {
+main > * {
     margin: auto;
 
     background: gray;
