@@ -29,4 +29,18 @@ const clamp = (x, min, max) => {
   return x;
 };
 
-export {generateRandomColor, isNull, isNullOrUndefined, clamp};
+const isBetween = (x, a ,b, strict) => {
+  let between = (a <= x && x <= b);
+  if (strict) {
+    between = between && a != x && b != x;
+  }
+  return between;
+};
+
+export {
+  generateRandomColor,
+  isNull,
+  isNullOrUndefined,
+  clamp,
+  isBetween,
+};
