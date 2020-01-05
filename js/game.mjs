@@ -18,7 +18,7 @@ let _canvas = undefined;
 let _ctx = undefined;
 let _camera = undefined;
 const _entities = new Map();
-const _systems = [];
+let _systems = [];
 let _playerID = undefined;
 let _isInitialized = false;
 let _needsToStop = false;
@@ -34,7 +34,7 @@ function _registerSystem(system) {
   const sysType = system.getType();
   if (!isNullOrUndefined(_systems.find( (system) =>
     (system.getType() === sysType)))) {
-    console.error('System already registered!');
+    console.error('System already registered: ', sysType);
     return;
   }
 
@@ -119,10 +119,12 @@ export default {
 
     _canvas = document.getElementById('game-area');
     _ctx = _canvas.getContext('2d');
+    _ctx.save();
     _ctx.imageSmoothingEnabled = false;
     _ctx.scale(SCALE, SCALE);
 
     _isInitialized = true;
+    _needsToStop = false;
     _registerSystem(createControlSystem());
     _registerSystem(createPhysicsSystem());
     _registerSystem(createCollisionSystem());
@@ -160,6 +162,9 @@ export default {
       }
       system.onUpdate(dt);
       _needsToStop = system.hasRequestedGameOver();
+      if (_needsToStop) {
+        return;
+      }
     }
     _camera.onUpdate(dt);
   },
@@ -180,18 +185,31 @@ export default {
     _ctx.restore();
   },
 
+  needsToStop() {
+    return _needsToStop;
+  },
+
   shutdown() {
     if (!_isInitialized) {
       console.warn('Game.shutdown :' + 'game is not initialized.');
       return;
     }
-    _isInitialized = false;
+    _ctx.restore();
 
-    for (const system of _systems.values()) {
+    _isInitialized = false;
+    _playerID = undefined;
+
+    for (const system of _systems) {
       if (isNullOrUndefined(system)) {
+        console.warn(
+            'Game shutdown: ',
+            'trying to unregister null or undefined system!'
+        );
         continue;
       }
       system.onShutdown();
     }
+    _systems = [];
+    _entities.clear();
   },
 };

@@ -5,6 +5,7 @@ import ResourceLoader from './js/utils/resource.mjs';
 import InputManager from './js/utils/input.mjs';
 import {isNullOrUndefined} from './js/utils/misc.mjs';
 import DOMHelpers from './js/utils/domHelpers.mjs';
+import Swal from './node_modules/sweetalert2/src/sweetalert2.js';
 
 let _isGameRunning = false;
 let _stopMain = undefined;
@@ -174,8 +175,12 @@ function stopGame() {
   _isGameRunning = false;
 
   // TODO get score from the game
-  // Create a form for asking user to submit the high score
-  // Create the UI for resetting the game and wire in that logic
+  Swal.fire({
+    title: 'Game over',
+    icon: 'question',
+    text: 'Play again?',
+    onClose: initForm,
+  });
 }
 
 ResourceLoader.init(initForm);
@@ -191,7 +196,7 @@ function main(tFrame) {
   Game.update(tNow - tFrame);
   Game.render();
 
-  if (Game.needsToStop) {
+  if (Game.needsToStop()) {
     stopGame();
   }
 }

@@ -1,5 +1,4 @@
 /* eslint-disable require-jsdoc */
-
 import System from '../system.mjs';
 
 // TODO load constants from json
@@ -30,4 +29,3 @@ const createPhysicsSystem = () => {
 };
 
 export default createPhysicsSystem;
-

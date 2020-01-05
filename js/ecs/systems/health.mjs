@@ -29,8 +29,8 @@ class HealthSystem extends System {
       if (health.HP <= 0) {
         if (entity.getID() === this._playerID) {
           // TODO enable once game flow is finalised
-          //this._requestGameOver = true;
-          //return;
+          this._needGameStop = true;
+          return;
         } else if (this._unspawnCallback) {
           this._unspawnCallback(entity);
         }
@@ -40,6 +40,7 @@ class HealthSystem extends System {
 
   onShutdown() {
     super.onShutdown();
+    this._unspawnCallback = null;
   }
 };
 
