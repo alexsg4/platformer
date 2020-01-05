@@ -21,6 +21,7 @@ const _entities = new Map();
 const _systems = [];
 let _playerID = undefined;
 let _isInitialized = false;
+let _needsToStop = false;
 
 const SCALE = 2;
 
@@ -46,6 +47,7 @@ function _unRegisterSystem(system) {
     console.warn('Game: trying to unRegister null system!');
     return;
   }
+  system.onShutdown();
   _systems.splice(_systems.indexOf(system), 1);
 }
 
@@ -128,6 +130,11 @@ export default {
     _registerSystem(createVisualSystem());
     _registerSystem(createHealthSystem(this.unSpawnEntity));
 
+    const genWorldSize = window.GameParams.WorldSize;
+    if (!isNullOrUndefined(genWorldSize) && genWorldSize > 0) {
+      World.init(genWorldSize, genWorldSize);
+    }
+
     this.spawnNewEntity('Player');
     // TODO remove test code
     this.spawnNewEntity('Frog');
@@ -152,6 +159,7 @@ export default {
         continue;
       }
       system.onUpdate(dt);
+      _needsToStop = system.hasRequestedGameOver();
     }
     _camera.onUpdate(dt);
   },

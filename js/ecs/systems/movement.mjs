@@ -25,18 +25,20 @@ class MovementSystem extends System {
   }
 
   onRender(ctx) {
-    ctx.save();
-    ctx.strokeStyle = 'green';
-    for (const entity of this._registeredEntities.values()) {
-      const physics = entity.getComponentByType(COMPONENT_TYPE);
-      const position = physics.Position;
-      const size = physics.Size;
-      ctx.beginPath();
-      ctx.moveTo(position.x + size.x/2, position.y);
-      ctx.lineTo(position.x + size.x/2, position.y + size.y);
-      ctx.stroke();
+    if (window.GameParams.DebugOverlay) {
+      ctx.save();
+      ctx.strokeStyle = 'green';
+      for (const entity of this._registeredEntities.values()) {
+        const physics = entity.getComponentByType(COMPONENT_TYPE);
+        const position = physics.Position;
+        const size = physics.Size;
+        ctx.beginPath();
+        ctx.moveTo(position.x + size.x/2, position.y);
+        ctx.lineTo(position.x + size.x/2, position.y + size.y);
+        ctx.stroke();
+      }
+      ctx.restore();
     }
-    ctx.restore();
   }
 };
 

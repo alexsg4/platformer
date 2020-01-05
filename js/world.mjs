@@ -2,8 +2,6 @@
 
 import {isNullOrUndefined} from './utils/misc.mjs';
 import ResourceLoader from './utils/resource.mjs';
-const DEBUG_TEXT = false;
-const DEBUG_OVERLAY = true;
 
 const ANY = 'ANY';
 const TILE_GRAMMAR = {
@@ -60,7 +58,7 @@ function isSolidTile(tileType) {
     return false;
   }
 
-  if (tileType === undefined && DEBUG_TEXT) {
+  if (tileType === undefined && window.GameParams.DebugText) {
     console.warn('TileType is undefined.');
     return false;
   }
@@ -76,7 +74,7 @@ function isSolidTile(tileType) {
 function drawTiles(ctx) {
   const tileAtlas = ResourceLoader.getImage('world-tiles');
 
-  if (DEBUG_TEXT) {
+  if (window.GameParams.DebugText) {
     console.log('------- TILE DRAW START -------');
   }
 
@@ -91,7 +89,7 @@ function drawTiles(ctx) {
       const col = i % WORLD_MAP_SIZE.col * TILE_SIZE;
       const row = Math.floor(i / WORLD_MAP_SIZE.col) * TILE_SIZE;
 
-      if (DEBUG_TEXT) {
+      if (window.GameParams.DebugText) {
         console.log('Drawing tile ' + tileType +' at: ' + col + ' ' + row);
       }
 
@@ -105,7 +103,7 @@ function drawTiles(ctx) {
     }
   }
 
-  if (DEBUG_TEXT) {
+  if (window.GameParams.DebugText) {
     console.log('------- TILE DRAW END -------');
   }
 }
@@ -187,7 +185,7 @@ export default {
 
   draw(ctx) {
     drawTiles(ctx);
-    if (DEBUG_OVERLAY) {
+    if (window.GameParams.DebugOverlay) {
       drawGrid(ctx);
     }
   },
@@ -197,12 +195,12 @@ export default {
     const row = Math.floor(y/TILE_SIZE);
     if (col < 0 || col >= WORLD_MAP_SIZE.col ||
       row < 0 || row >= WORLD_MAP_SIZE.row) {
-      if (DEBUG_TEXT) {
+      if (window.GameParams.DebugText) {
         console.warn('Tile not preset at row: ', row, ' column: ', col);
       }
       return false;
     }
-    if (DEBUG_TEXT) {
+    if (window.GameParams.DebugText) {
       console.log('Tile test row: ', row, ' column: ', col);
     }
     return isSolidTile(WORLD_TILES[col + row * WORLD_MAP_SIZE.col]);

@@ -1,118 +1,22 @@
+/* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 import Game from './js/game.mjs';
 import ResourceLoader from './js/utils/resource.mjs';
 import InputManager from './js/utils/input.mjs';
-import Swal from './node_modules/sweetalert2/src/sweetalert2.js';
 import {isNullOrUndefined} from './js/utils/misc.mjs';
-
-window.dbgDisplay = false;
+import DOMHelpers from './js/utils/domHelpers.mjs';
 
 let _isGameRunning = false;
 let _stopMain = undefined;
 
-function createTextInput(type, name, labelValue, value) {
-  const para = document.createElement('p');
-
-  const inputID = 'input-' + name;
-  if (labelValue) {
-    const label = document.createElement('label');
-    label.innerHTML = labelValue + ': ';
-    label.for = inputID;
-    para.appendChild(label);
-  }
-  const input = document.createElement('input');
-  input.type = type;
-  input.id = inputID;
-  input.value = value || '';
-
-  para.appendChild(input);
-
-  return para;
-}
-
-function createSelectInput(name, labelValue, options) {
-  const para = document.createElement('p');
-
-  const inputID = 'input-' + name;
-  if (labelValue) {
-    const label = document.createElement('label');
-    label.innerHTML = labelValue + ': ';
-    label.for = inputID;
-    para.appendChild(label);
-  }
-  const input = document.createElement('select');
-  input.id = inputID;
-
-  for (let optionValue of options) {
-    const option = document.createElement('option');
-    optionValue = optionValue;
-    option.innerHTML = optionValue;
-    option.value = optionValue.toLowerCase();
-
-    input.append(option);
-  }
-
-  para.appendChild(input);
-  return para;
-}
-
-function createRCInput(type, name, labelValue, value, text) {
-  const para = document.createElement('p');
-
-  const inputID = 'input-' + name;
-  if (labelValue) {
-    const label = document.createElement('label');
-    label.innerHTML = labelValue + ': ';
-    label.for = inputID;
-    para.appendChild(label);
-  }
-
-  const input = document.createElement('input');
-  input.type = type;
-  input.id = inputID;
-  input.value = value || '';
-
-  para.appendChild(input);
-  para.appendChild(document.createTextNode(text));
-  return para;
-}
-
-function createRangeInput(name, labelValue, value, min, max, step) {
-  const para = document.createElement('p');
-
-  const inputID = 'input-' + name;
-  if (labelValue) {
-    const label = document.createElement('label');
-    label.innerHTML = labelValue + ': ';
-    label.for = inputID;
-    para.appendChild(label);
-  }
-
-  const input = document.createElement('input');
-  input.type = 'range';
-  input.id = inputID;
-  input.value = value;
-  input.min = min;
-  input.max = max;
-  input.step = step;
-
-  para.appendChild(input);
-  return para;
-}
-
-function initForm() {
+function createForm() {
   const mainArea = document.getElementsByTagName('main')[0];
-  const gameArea = document.getElementById('game-area');
-  if (!isNullOrUndefined(gameArea)) {
-    gameArea.style.display = 'none';
-  }
-
   const formContainer = document.createElement('div');
   formContainer.id = 'form-container';
 
   const formTitle = document.createElement('h2');
   formTitle.id = 'form-title';
-  formTitle.innerHTML = 'Register';
+  formTitle.innerHTML = 'Config';
   const form = document.createElement('form');
   form.id = 'register-form';
   form.addEventListener('submit', (event) => {
@@ -120,42 +24,117 @@ function initForm() {
     event.preventDefault();
   });
 
-  const nameInput = createTextInput('text', 'frName', 'Name');
-  const pwInput = createTextInput('password', 'frPassword', 'Password');
-  const emailInput = createTextInput('email', 'frEmail', 'Email');
-  const selectInput = createSelectInput(
+  const nameInput = DOMHelpers.createTextInput(
+      'text', 'frName', 'Name',
+      {
+        regex: '^[a-zA-Z]{1}[0-9a-zA-Z]{2,15}$',
+        required: true,
+        errClass: 'errField',
+        errMsg: 'Name must be between 3 and 16 characters and start with a letter',
+      },
+  );
+
+  const pwInput = DOMHelpers.createTextInput(
+      'password', 'frPassword', 'Password',
+      {
+        regex: '^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@$!%*#?&]).{8,64}$',
+        required: true,
+        errClass: 'errField',
+        errMsg: 'Password must be between 8-64 characters long and contain at least one letter, one number and one special character: @$!%*#?&',
+      },
+  );
+  const emailInput = DOMHelpers.createTextInput(
+      'email', 'frEmail', 'Email',
+      {
+        // regex: '[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*',
+        required: true,
+        errClass: 'errField',
+        errMsg: 'Email address is invalid',
+      },
+  );
+
+  const selDifficulty = DOMHelpers.createSelectInput(
       'frSelect',
       'Difficulty',
       ['easy', 'normal', 'hard'],
   );
 
-  const radioButtonA = createRCInput('radio', 'radio-wrld-gen', '', 'generatedWorld', 'Generate world');
-  const radioButtonB = createRCInput('radio', 'radio-wrld-test', '', 'testWorld', 'testWorld world');
-  const checkButtonA = createRCInput('checkbox', 'dbg-text', '', 'dbg-text', 'Debug text');
-  const checkButtonB = createRCInput('checkbox', 'dbg-overlay', '', 'dbg-overlay', 'Debug overlay');
-  
-  const rangeInput = createRangeInput('range', 'WorldSize', '10', '8', '48', '1');
+  const rbGenWorld = DOMHelpers.createRCInput('radio', 'radio-wrld-gen', '', 'generatedWorld', 'Generate world');
+  const rbTestWorld = DOMHelpers.createRCInput('radio', 'radio-wrld-test', '', 'testWorld', 'Test world');
+
+  const cbDbgText = DOMHelpers.createRCInput('checkbox', 'dbg-text', '', 'dbg-text', 'Debug text');
+  const cbDbgOverlay = DOMHelpers.createRCInput('checkbox', 'dbg-overlay', '', 'dbg-overlay', 'Debug overlay');
+
+  const rgWorldSize = DOMHelpers.createRangeInput('range', 'WorldSize', '36', '16', '64', '4');
 
   const submitInput = document.createElement('input');
   submitInput.type = 'submit';
-  submitInput.value = 'startGame';
+  submitInput.value = 'Start Game';
 
   form.appendChild(nameInput);
   form.appendChild(pwInput);
   form.appendChild(emailInput);
-  form.appendChild(selectInput);
+
+  selDifficulty.addEventListener('input', () => {
+    window.GameParams.Difficulty = selDifficulty.children[1].value;
+  });
+  form.appendChild(selDifficulty);
+
+  form.appendChild(document.createElement('br'));
   form.appendChild(document.createTextNode('Debug config: '));
-  form.appendChild(checkButtonA);
-  form.appendChild(checkButtonB);
+  cbDbgText.addEventListener('input', () => {
+    window.GameParams.DebugText = cbDbgText.children[0].checked;
+  });
+  cbDbgOverlay.addEventListener('input', () => {
+    window.GameParams.DebugOverlay = cbDbgOverlay.children[0].checked;
+  });
+  form.appendChild(cbDbgText);
+  form.appendChild(cbDbgOverlay);
+
   form.appendChild(document.createTextNode('World config: '));
-  form.appendChild(radioButtonA);
-  form.appendChild(radioButtonB);
-  form.appendChild(rangeInput);
+  rbGenWorld.addEventListener('input', (event) => {
+    rbTestWorld.children[0].checked = false;
+    rgWorldSize.children[1].disabled = false;
+  });
+  rbTestWorld.addEventListener('input', (event) => {
+    rbGenWorld.children[0].checked = false;
+    rgWorldSize.children[1].disabled = true;
+    rgWorldSize.children[1].value = 0;
+  });
+  form.appendChild(rbGenWorld);
+  form.appendChild(rbTestWorld);
+  rgWorldSize.addEventListener('input', () => {
+    window.GameParams.WorldSize = parseInt(rgWorldSize.children[1].value);
+    // TODO display on screen
+    console.log('World size ', rgWorldSize.children[1].value);
+  });
+  form.appendChild(rgWorldSize);
   form.appendChild(submitInput);
 
   formContainer.appendChild(formTitle);
   formContainer.appendChild(form);
   mainArea.appendChild(formContainer);
+}
+
+function initForm() {
+  const gameArea = document.getElementById('game-area');
+  if (!isNullOrUndefined(gameArea)) {
+    gameArea.style.display = 'none';
+  }
+
+  window.GameParams = {
+    'DebugOverlay': false,
+    'DebugText': false,
+    'WorldSize': false,
+    'Difficulty': 'easy',
+  };
+
+  const formArea = document.getElementById('form-container');
+  if (isNullOrUndefined(formArea)) {
+    createForm();
+  } else {
+    formArea.style.display = 'block';
+  }
 }
 
 function initGame() {
