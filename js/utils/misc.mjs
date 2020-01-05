@@ -3,7 +3,7 @@ const generateRandomColor = function() {
   const maxColor = 0xdddddd;
   const generatedColor = '#' + Math.floor(
       minColor + Math.random() * maxColor).toString(16);
-  if (window.dbgDisplay) {
+  if (window.GameParams.DebugText) {
     console.log('Generated new color: ' + generatedColor);
   }
   return generatedColor;
@@ -29,4 +29,18 @@ const clamp = (x, min, max) => {
   return x;
 };
 
-export {generateRandomColor, isNull, isNullOrUndefined, clamp};
+const isBetween = (x, a ,b, strict) => {
+  let between = (a <= x && x <= b);
+  if (strict) {
+    between = between && a != x && b != x;
+  }
+  return between;
+};
+
+export {
+  generateRandomColor,
+  isNull,
+  isNullOrUndefined,
+  clamp,
+  isBetween,
+};

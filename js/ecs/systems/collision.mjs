@@ -176,22 +176,23 @@ class CollisionSystem extends System {
   }
 
   onRender(ctx) {
-    // TODO disable debug code
-    ctx.save();
-    ctx.strokeStyle='red';
-    for (const entity of this._registeredEntities.values()) {
-      const physics = entity.getComponentByType('Physics');
-      if (physics === undefined ) {
-        continue;
+    if (window.GameParams.DebugOverlay) {
+      ctx.save();
+      ctx.strokeStyle='red';
+      for (const entity of this._registeredEntities.values()) {
+        const physics = entity.getComponentByType('Physics');
+        if (physics === undefined ) {
+          continue;
+        }
+        ctx.strokeRect(
+            Math.floor(physics.Position.x),
+            Math.floor(physics.Position.y),
+            physics.Size.x,
+            physics.Size.y,
+        );
       }
-      ctx.strokeRect(
-          Math.floor(physics.Position.x),
-          Math.floor(physics.Position.y),
-          physics.Size.x,
-          physics.Size.y,
-      );
+      ctx.restore();
     }
-    ctx.restore();
   }
 
   onShutdown() {

@@ -8,6 +8,8 @@ html, body {
     padding: 0;
 
     min-width: 600px;
+
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 header {
@@ -28,10 +30,39 @@ main {
     align-items: center;
 }
 
-main #game-area {
+main > * {
     margin: auto;
-
     background: gray;
+}
+
+main > #form-container {
+    border-radius: 10px;
+    padding: 1em;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+main > #form-container > #register-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+main > #form-container > #register-form input {
+    margin-left: 10px;
+}
+
+main > #form-container > #register-form #input-frPassword, #input-frEmail, #input-frName {
+    float: right;
+}
+
+main > #form-container > #register-form .errField {
+    background: rgba(255, 27, 27, 0.5);
+}
+
+main > #form-container > #register-form input:disabled {
+    background: gray;
+    opacity: 0.6;
 }
 
 footer {
