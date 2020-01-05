@@ -50,11 +50,8 @@ class ControlSystem extends System {
   }
 
   handleUserInput(entity) {
-    const visualComp = entity.getComponentByType('Visual');
-    if (visualComp) {
-      visualComp.CurrentState = 'idle';
-    }
     const actions = entity.getComponentByType(COMPONENT_TYPE).Actions;
+    let isIdle = true;
     for (const action of Object.keys(actions)) {
       const InputConfig = actions[action];
       const actionInputState =
@@ -66,10 +63,14 @@ class ControlSystem extends System {
 
       const actionHappened = InputConfig.hold && actionInputState.active ||
           !InputConfig.hold && actionInputState.pressed;
-      if (!actionHappened) {
-        continue;
+      if (actionHappened) {
+        this.handleAction(action, entity);
+        isIdle = false;
       }
-      this.handleAction(action, entity);
+    }
+    const visualComp = entity.getComponentByType('Visual');
+    if (visualComp && isIdle) {
+      visualComp.CurrentState = 'idle';
     }
   }
 
