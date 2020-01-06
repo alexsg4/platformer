@@ -93,6 +93,8 @@ function createForm() {
   form.appendChild(cbDbgOverlay);
 
   form.appendChild(document.createTextNode('World config: '));
+  rbGenWorld.children[0].checked = false;
+  rbTestWorld.children[0].checked = true;
   rbGenWorld.addEventListener('input', (event) => {
     rbTestWorld.children[0].checked = false;
     rgWorldSize.children[1].disabled = false;
@@ -104,6 +106,8 @@ function createForm() {
   });
   form.appendChild(rbGenWorld);
   form.appendChild(rbTestWorld);
+  rgWorldSize.children[1].disabled = true;
+  rgWorldSize.children[1].value = 0;
   rgWorldSize.addEventListener('input', () => {
     window.GameParams.WorldSize = parseInt(rgWorldSize.children[1].value);
     // TODO display on screen
