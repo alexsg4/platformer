@@ -60,7 +60,7 @@ function createForm() {
       ['easy', 'normal', 'hard'],
   );
 
-  const rbGenWorld = DOMHelpers.createRCInput('radio', 'radio-wrld-gen', '', 'generatedWorld', 'Generate world');
+  const rbGenWorld = DOMHelpers.createRCInput('radio', 'radio-wrld-gen', '', 'generatedWorld', 'Generate world (BETA)');
   const rbTestWorld = DOMHelpers.createRCInput('radio', 'radio-wrld-test', '', 'testWorld', 'Test world');
 
   const cbDbgText = DOMHelpers.createRCInput('checkbox', 'dbg-text', '', 'dbg-text', 'Debug text');
