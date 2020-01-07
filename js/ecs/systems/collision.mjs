@@ -57,6 +57,11 @@ class CollisionSystem extends System {
       if (yBottom >= worldSize.row * tileSize) {
         physics.Position.y -= pushbackForce;
         physics.Velocity.y = 0;
+        const health = entity.getComponentByType('Health');
+        if (!isNullOrUndefined(health)) {
+          // reduce health when entity is falling towards bottom of world
+          health.HP -= 100;
+        }
       }
 
       // Top exit
