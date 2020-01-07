@@ -38,6 +38,30 @@ class HealthSystem extends System {
     }
   }
 
+  onRender(ctx) {
+    let healthValue = null;
+    let position = null;
+    const player = this._registeredEntities.get(this._playerID);
+    if (!isNullOrUndefined(player)) {
+      const health = player.getComponentByType('Health');
+      const physics = player.getComponentByType('Physics');
+      if (!isNullOrUndefined(health)) {
+        healthValue = health.HP.toString();
+      }
+      if (!isNullOrUndefined(physics)) {
+        position = {
+          x: Math.floor(physics.Position.x + physics.Size.x/4),
+          y: physics.Position.y,
+        };
+      }
+    }
+
+    if (!isNullOrUndefined(healthValue) && !isNullOrUndefined(position)) {
+      ctx.font = '7px Arial';
+      ctx.fillText('HP: ' + healthValue, position.x, position.y);
+    }
+  }
+
   onShutdown() {
     super.onShutdown();
     this._unspawnCallback = null;
