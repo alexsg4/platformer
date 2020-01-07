@@ -55,20 +55,12 @@ function init(inputs) {
   // Set up `onkeyup` event handler
   document.onkeyup = (ev) => {
     let inputState = undefined;
-    let useKeyCode = false;
     if (ev.key === undefined) {
       inputState = _inputStates.get(ev.keyCode);
-      useKeyCode = true;
     } else {
       inputState = _inputStates.get(ev.key);
     }
-    if (inputState === undefined) {
-      if (useKeyCode) {
-        _inputStates.set(ev.keyCode, new InputState());
-      } else {
-        _inputStates.set(ev.key, new InputState());
-      }
-    } else {
+    if (inputState !== undefined) {
       inputState.onKeyUp();
     }
   };
