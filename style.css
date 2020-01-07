@@ -35,7 +35,7 @@ main > * {
     background: gray;
 }
 
-main > #form-container {
+main > #form-container, #controls-container {
     border-radius: 10px;
     padding: 1em;
     background: rgba(0, 0, 0, 0.5);

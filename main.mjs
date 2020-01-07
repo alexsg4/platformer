@@ -10,6 +10,46 @@ import Swal from './node_modules/sweetalert2/src/sweetalert2.js';
 let _isGameRunning = false;
 let _stopMain = undefined;
 
+function createControlsDisplay() {
+  const mainArea = document.getElementsByTagName('main')[0];
+  const controlsContainer = document.createElement('div');
+  controlsContainer.id = 'controls-container';
+
+  const controlsList = document.createElement('p');
+  controlsList.id = 'controls-list';
+  controlsList.textContent = 'Move:\t\tWASD\nAttack:\t\t: Space';
+  const controlsTile = document.createElement('h2');
+  controlsTile.textContent = 'Controls';
+
+  controlsContainer.appendChild(controlsTile);
+  controlsContainer.appendChild(controlsList);
+
+  mainArea.appendChild(controlsContainer);
+}
+
+function initControlsDisplay() {
+  const controls = document.getElementById('controls-container');
+  if (isNullOrUndefined(controls)) {
+    createControlsDisplay();
+  } else {
+    controls.style.display = 'block';
+  }
+
+  const form = document.getElementById('form-container');
+  if (!isNullOrUndefined(form)) {
+    form.style.display = 'none';
+  }
+
+  window.setTimeout(
+      () => {
+        const controls = document.getElementById('controls-container');
+        controls.style.display = 'none';
+        initGame();
+      },
+      2000,
+  );
+}
+
 function createForm() {
   const mainArea = document.getElementsByTagName('main')[0];
   const formContainer = document.createElement('div');
@@ -21,7 +61,7 @@ function createForm() {
   const form = document.createElement('form');
   form.id = 'register-form';
   form.addEventListener('submit', (event) => {
-    initGame();
+    initControlsDisplay();
     event.preventDefault();
   });
 
@@ -156,12 +196,6 @@ function initGame() {
   } else {
     gameArea.style.display = 'block';
   }
-
-  const form = document.getElementById('form-container');
-  if (!isNullOrUndefined(form)) {
-    form.style.display = 'none';
-  }
-
   startGame();
 }
 
