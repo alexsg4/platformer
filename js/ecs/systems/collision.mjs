@@ -146,13 +146,14 @@ class CollisionSystem extends System {
         case 'Frog':
         case 'Skeleton':
         case 'Bat':
+        case 'Ghost':
           if (playerWeapon.isAttacking) {
             enemyHealth.HP = Math.max(0, enemyHealth.HP - playerWeapon.damage);
           }
           playerHealth.HP = Math.max(0, playerHealth.HP - enemyWeapon.damage);
           break;
         default:
-          console.log('Handle collision with ', entity.getArchetype());
+          console.log('Handle collision with:', entity.getArchetype());
           break;
       }
     };
