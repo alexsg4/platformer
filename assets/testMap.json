@@ -2,7 +2,7 @@
     "mapData": [
     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
     null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-    null, null, "F", null, null, null, null, "S", null, "F", null, "S", null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, "F", null, null, "S", null, "F", null, "S", null, null, null, null, null, null, null, null, null, null, null, null,
     "WKS", "WK1", "WK2", "WKE", "BR2", "BR1", "BR1", "BR2", "BR1", "BR2", "WKS", "WK1", "WK2", "WK3", "WK1", "WKE", null, null, null, null, null, null, null, null,
     "DMS", "DM2", "DM1", "DME", null, null, null, null, null, null, "DLS", "DL1", "DL2", "DL1", "DL2", "DLE", null, null, null, null, null, null, "G", null,
     "DLS", "DL1", "DL2", "DLE", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "WK2", null,

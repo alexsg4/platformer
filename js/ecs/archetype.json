@@ -62,7 +62,7 @@
             "PrevDirectionX": "right"
         },
         "Health": {
-            "HP": 5000
+            "HP": 500
         },
         "Weapon": {
             "type": "melee",
