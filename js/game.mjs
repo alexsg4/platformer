@@ -42,15 +42,6 @@ function _registerSystem(system) {
   system.onInit();
 }
 
-function _unRegisterSystem(system) {
-  if (isNullOrUndefined(system)) {
-    console.warn('Game: trying to unRegister null system!');
-    return;
-  }
-  system.onShutdown();
-  _systems.splice(_systems.indexOf(system), 1);
-}
-
 function _registerEntity(entity) {
   if (isNullOrUndefined(entity)) {
     console.warn('Game: trying to register null entity!');
@@ -75,7 +66,7 @@ function _unRegisterEntity(entity) {
 }
 
 export default {
-  spawnNewEntity(archetype) {
+  spawnNewEntity(archetype, position) {
     const isPlayer = archetype === 'Player';
     if (isPlayer && !isNullOrUndefined(_playerID)) {
       console.error('Game.spawnNewEntity: ' + 'Player already exists!');
@@ -89,6 +80,11 @@ export default {
       console.error('Game.spawnNewEntity: ' + 'entity creation failed!');
       return;
     }
+    const physics = entity.getComponentByType('Physics');
+    if (!isNullOrUndefined(physics) && !isNullOrUndefined(position)) {
+      physics.Position = position;
+    }
+
     _registerEntity(entity);
     if (isPlayer) {
       _playerID = entity.getID();
@@ -135,11 +131,11 @@ export default {
     const genWorldSize = window.GameParams.WorldSize;
     if (!isNullOrUndefined(genWorldSize) && genWorldSize > 0) {
       World.init(genWorldSize, genWorldSize);
+    } else {
+      World.init();
     }
 
     this.spawnNewEntity('Player');
-    // TODO remove test code
-    this.spawnNewEntity('Frog');
 
     const worldInfo = {
       mapSize: World.getSize(),

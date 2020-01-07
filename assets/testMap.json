@@ -1,0 +1,33 @@
+{
+    "mapData": [
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, "F", null, null, null, null, "S", null, "F", null, "S", null, null, null, null, null, null, null, null, null, null, null, null,
+    "WKS", "WK1", "WK2", "WKE", "BR2", "BR1", "BR1", "BR2", "BR1", "BR2", "WKS", "WK1", "WK2", "WK3", "WK1", "WKE", null, null, null, null, null, null, null, null,
+    "DMS", "DM2", "DM1", "DME", null, null, null, null, null, null, "DLS", "DL1", "DL2", "DL1", "DL2", "DLE", null, null, null, null, null, "G", null, null,
+    "DLS", "DL1", "DL2", "DLE", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "WK1", null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "G", null, null, null, "G", null, null,
+    null, null, null, null, null, "S", "S", null, null, null, null, null, null, null, null, "WK1", "WK3", "WK2", "WKE", null, "WKS", "WK1", "WKE", null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,    
+    null, "DM1", "DM2", "DME", null, "WK1", "WK3", "WK2", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, "DL1", "DL2", "DLE", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, "S", "S", null, "S", null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, "WKS", "WK1", "WK2", "WK3", "BR1", "BR2", "BR1", "WKS", "WK1", "WK3", null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+    "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK", "SPK",
+    "DL1", "DL2", "DL1", "DL1", "DL1", "DL1", "DL2", "DL2", "DL2", "DL1", "DL1", "DL2", "DL1", "DL2", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1",
+    "DL1", "DL2", "DL1", "DL1", "DL1", "DL1", "DL2", "DL2", "DL2", "DL1", "DL1", "DL2", "DL1", "DL2", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1", "DL1"
+    ],
+
+    "size": {
+        "col": 24,
+        "row": 24
+    }
+}

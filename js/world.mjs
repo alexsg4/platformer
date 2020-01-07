@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 
 import {isNullOrUndefined} from './utils/misc.mjs';
 import ResourceLoader from './utils/resource.mjs';
+import Game from './game.mjs';
 
 const ANY = 'ANY';
 const TILE_GRAMMAR = {
@@ -36,18 +38,14 @@ const TILE_GRAMMAR = {
   'BSE': [null, ANY],
   'SPK': [null, 'SPK', ANY],
 };
+const ENTITY_BY_TILE = {
+  'F': 'Frog',
+  'G': 'Ghost',
+  'B': 'Bat',
+  'S': 'Skeleton',
+};
 
-// init with test config by default
-let WORLD_TILES = [
-  null, null, null, null, null, null, null, null,
-  null, null, null, null, null, null, null, null,
-  null, null, null, null, null, null, null, null,
-  null, null, null, null, null, null, null, null,
-  null, null, null, null, null, null, null, null,
-  null, null, 'FES', 'FE1', 'FEE', null, null, null,
-  'WKS', 'WK1', 'WK1', 'WK1', 'WK1', 'WK2', 'WK1', 'WKE',
-  null, null, 'DL2', 'DL1', 'DL1', 'DL2', 'DL1', 'DL2',
-];
+let WORLD_TILES = [];
 
 const DEFAULT_MAP_SIZE = {col: 8, row: 8};
 const WORLD_MAP_SIZE = {col: 8, row: 8};
@@ -71,6 +69,18 @@ function isSolidTile(tileType) {
   );
 }
 
+function getTilePositionByIndex(index) {
+  if (isNullOrUndefined(index) || typeof(index) !== 'number') {
+    console.warn('Index is not a number.');
+    return null;
+  } {
+    return {
+      x: index % WORLD_MAP_SIZE.col * TILE_SIZE,
+      y: Math.floor(index / WORLD_MAP_SIZE.col) * TILE_SIZE,
+    };
+  }
+}
+
 function drawTiles(ctx) {
   const tileAtlas = ResourceLoader.getImage('world-tiles');
 
@@ -80,24 +90,23 @@ function drawTiles(ctx) {
 
   for (let i = 0; i < WORLD_TILES.length; i++) {
     const tileType = WORLD_TILES[i];
-    if (tileType !== null) {
+    if (tileType !== null && isNullOrUndefined(ENTITY_BY_TILE[tileType])) {
       const tileImgCoords = ResourceLoader.getTileImageCoordsByType(tileType);
       if (isNullOrUndefined(tileImgCoords)) {
         console.warn('Tile Image coords not found for: ' + tileType);
         continue;
       }
-      const col = i % WORLD_MAP_SIZE.col * TILE_SIZE;
-      const row = Math.floor(i / WORLD_MAP_SIZE.col) * TILE_SIZE;
 
+      const pos = getTilePositionByIndex(i);
       if (window.GameParams.DebugText) {
-        console.log('Drawing tile ' + tileType +' at: ' + col + ' ' + row);
+        console.log('Drawing tile ' + tileType +' at: ' + pos.x + ' ' + pos.y);
       }
 
       ctx.drawImage(
           tileAtlas,
           tileImgCoords.x, tileImgCoords.y,
           TILE_SIZE, TILE_SIZE,
-          col, row,
+          pos.x, pos.y,
           TILE_SIZE, TILE_SIZE,
       );
     }
@@ -168,18 +177,37 @@ function getAnyTile() {
 
 export default {
   init(cols, rows) {
-    WORLD_MAP_SIZE.col = typeof cols === 'number' ? cols : DEFAULT_MAP_SIZE.col;
-    WORLD_MAP_SIZE.row = typeof rows === 'number' ? rows : DEFAULT_MAP_SIZE.row;
+    // init with test map by default
+    if (!cols || !rows) {
+      const testMap = ResourceLoader.getTestMap();
+      if (isNullOrUndefined(testMap)) {
+        console.error('World init: ', 'no map data!');
+        return;
+      }
+      WORLD_TILES = testMap.mapData;
+      WORLD_MAP_SIZE.col = testMap.size.col;
+      WORLD_MAP_SIZE.row = testMap.size.row;
+    } else {
+      WORLD_MAP_SIZE.col = typeof cols === 'number' ? cols : DEFAULT_MAP_SIZE.col;
+      WORLD_MAP_SIZE.row = typeof rows === 'number' ? rows : DEFAULT_MAP_SIZE.row;
 
-    WORLD_TILES = new Array(WORLD_MAP_SIZE.col * WORLD_MAP_SIZE.row).fill(null);
-    const initialTile = 'WKS';
-    const emptyRows = 5;
-    const startingTilePos = emptyRows * WORLD_MAP_SIZE.col + 1;
-    WORLD_TILES[startingTilePos] = initialTile;
+      WORLD_TILES = new Array(WORLD_MAP_SIZE.col * WORLD_MAP_SIZE.row).fill(null);
+      const initialTile = 'WKS';
+      const emptyRows = 5;
+      const startingTilePos = emptyRows * WORLD_MAP_SIZE.col + 1;
+      WORLD_TILES[startingTilePos] = initialTile;
 
-    // eslint-disable-next-line max-len
-    for (let i = startingTilePos + 1; i < WORLD_TILES.length; i++) {
-      WORLD_TILES[i] = getNextTile(WORLD_TILES[i-1]);
+      for (let i = startingTilePos + 1; i < WORLD_TILES.length; i++) {
+        WORLD_TILES[i] = getNextTile(WORLD_TILES[i-1]);
+      }
+    }
+
+    for (let i=0; i<WORLD_TILES.length; i++) {
+      const entityType = ENTITY_BY_TILE[WORLD_TILES[i]];
+      if (!isNullOrUndefined(entityType)) {
+        const spawnPos = getTilePositionByIndex(i);
+        Game.spawnNewEntity(entityType, spawnPos);
+      }
     }
   },
 

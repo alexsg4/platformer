@@ -49,11 +49,14 @@ let _readyCallback = undefined;
 const _images = new Map();
 let _tileMapData = undefined;
 let _archetypeData = undefined;
+let _testMap = undefined;
 
 function _isReady() {
   if (_images.size < IMAGE_PATHS.size ||
     isNullOrUndefined(_tileMapData)||
-    isNullOrUndefined(_archetypeData)) {
+    isNullOrUndefined(_archetypeData)||
+    isNullOrUndefined(_testMap)) {
+
     return false;
   }
 
@@ -103,6 +106,7 @@ function _loadImages() {
   }
 }
 
+// TODO refacto into a single method
 function _loadTileMapData() {
   const httpReq = new XMLHttpRequest();
   httpReq.open('GET', window.location + '/assets/tilemap.json');
@@ -125,10 +129,22 @@ function _loadArchetypeData() {
   };
 }
 
+function _loadTestMapData() {
+  const httpReq = new XMLHttpRequest();
+  httpReq.open('GET', window.location + '/assets/testMap.json');
+  httpReq.responseType = 'json';
+  httpReq.send();
+  httpReq.onload = () => {
+    _testMap = httpReq.response;
+    _checkAndHandleReady();
+  };
+}
+
 function _init() {
   _loadImages();
   _loadTileMapData();
   _loadArchetypeData();
+  _loadTestMapData();
   _isInit = true;
 }
 
@@ -174,5 +190,9 @@ export default {
       return undefined;
     }
     return _archetypeData[archetype];
+  },
+
+  getTestMap() {
+    return _testMap;
   }
 };
