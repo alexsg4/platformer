@@ -44,10 +44,10 @@ class Camera {
       const mapHeight = _worldInfo.tileSize * _worldInfo.mapSize.row;
 
       // temp hack
-      if (_width < mapWidth || _height < mapHeight) {
-        _posX = clamp(_posX, 0, Math.min(mapWidth - _width / 2, _width / 2));
-        _posY = clamp(_posY, 0, Math.max(mapHeight - _height, _height / 2));
-      }
+      // if (_width < mapWidth || _height < mapHeight) {
+      _posX = clamp(_posX, 0, Math.min(mapWidth - _width / 2, _width / 2));
+      _posY = clamp(_posY, 0, Math.max(mapHeight - _height, _height / 2));
+      // }
     };
   }
 };
