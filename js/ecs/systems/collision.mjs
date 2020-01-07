@@ -146,10 +146,12 @@ class CollisionSystem extends System {
         case 'Frog':
         case 'Skeleton':
         case 'Bat':
-        case 'Ghost':
           if (playerWeapon.isAttacking) {
             enemyHealth.HP = Math.max(0, enemyHealth.HP - playerWeapon.damage);
           }
+          playerHealth.HP = Math.max(0, playerHealth.HP - enemyWeapon.damage);
+          break;
+        case 'Ghost':
           playerHealth.HP = Math.max(0, playerHealth.HP - enemyWeapon.damage);
           break;
         default:
