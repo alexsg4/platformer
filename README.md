@@ -3,9 +3,10 @@
 A 2D platformer where you kill ghosts and collect food
 
 ## Instructions
+
 1. Install NodeJS
 2. Open a terminal, navigate to "platformer/" and run `npm install`
-3. Open "index.html" in your browser
+3. After it's done run `npm start` and the game will open in your default browser
 
 ## Planned features
 

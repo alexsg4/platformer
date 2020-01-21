@@ -4,6 +4,7 @@
   "description": "A 2D platformer where you kill ghosts and collect food",
   "main": "main.mjs",
   "scripts": {
+    "start": "http-server -o -cors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,6 +27,7 @@
   },
   "homepage": "https://github.com/alexsg4/platformer#readme",
   "dependencies": {
+    "http-server": "^0.12.1",
     "sweetalert2": "^9.5.4"
   },
   "devDependencies": {
