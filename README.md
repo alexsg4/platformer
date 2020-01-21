@@ -2,10 +2,15 @@
 
 A 2D platformer where you kill ghosts and collect food
 
+## Instructions
+1. Install NodeJS
+2. Open a terminal, navigate to "platformer/" and run `npm install`
+3. Open "index.html" in your browser
+
 ## Planned features
 
-- Procedurally generated levels
-- Simple enemy AI
+- Procedurally generated levels (WIP)
+- Simple enemy AI (WIP)
 - Powerups
 - High score list
 
